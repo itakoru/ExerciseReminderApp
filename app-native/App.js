@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Button, Text } from 'react-native';
-
-// 1. Hier werden alle deine 12 Fenster importiert
+import { TimerProvider } from './context/TimerContext';
+import { registerForPushNotificationsAsync } from './services/NotificationService';
 import FlowSetupScreen from './pages/FlowSetupScreen';
 import ExerciseDurationSetupScreen from './pages/ExerciseDurationSetupScreen';
 import ExerciseListScreen from './pages/ExerciseListScreen';
@@ -14,48 +14,51 @@ import PraiseScreen from './pages/PraiseScreen';
 import DailySuccessScreen from './pages/DailySuccessScreen';
 
 export default function App() {
-  // TIPP: Ändere die Zahl hier (1 bis 11), um das jeweilige Fenster live zu sehen!
   const [currentScreen, setCurrentScreen] = useState(1);
 
-  // Diese Funktion entscheidet, welches Fenster gezeichnet wird
+  // Request notification permissions when the app boots!
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
+
   const renderScreen = () => {
     switch (currentScreen) {
-      case 1: return <FlowSetupScreen />;
+      case 1: return <FlowSetupScreen onNavigate={setCurrentScreen} />;
       case 2: return <ExerciseDurationSetupScreen />;
       case 3: return <ExerciseListScreen />;
-      case 4: return <ExerciseInfoScreen />; // (3.1 in deiner Liste)
+      case 4: return <ExerciseInfoScreen />;
       case 5: return <ReminderIntervalSetupScreen />;
-      case 6: return <TimerActiveScreen />;
-      case 7: return <ExerciseTimerScreen />;
+      case 6: return <TimerActiveScreen onNavigate={setCurrentScreen} />;
+      case 7: return <ExerciseTimerScreen onNavigate={setCurrentScreen} />;
       case 8: return <ExerciseDetailScreen />;
       case 9: return <PraiseScreen />;
       case 10: return <DailySuccessScreen />;
-      default: return <FlowSetupScreen />;
+      default: return <FlowSetupScreen onNavigate={setCurrentScreen} />;
     }
   };
 
   return (
-    <View style={styles.container}>
-      {/* Hier wird das aktive Fenster angezeigt */}
-      <View style={styles.screenContainer}>
-        {renderScreen()}
-      </View>
+    <TimerProvider>
+      <View style={styles.container}>
+        <View style={styles.screenContainer}>
+          {renderScreen()}
+        </View>
 
-      {/* Eine kleine Steuerungsleiste am unteren Bildschirmrand zum Durchschalten */}
-      <View style={styles.navBar}>
-        <Button 
-          title="Zurück" 
-          disabled={currentScreen === 1} 
-          onPress={() => setCurrentScreen(currentScreen - 1)} 
-        />
-        <Text style={styles.navText}>Fenster: {currentScreen} / 10</Text>
-        <Button 
-          title="Weiter" 
-          disabled={currentScreen === 10} 
-          onPress={() => setCurrentScreen(currentScreen + 1)} 
-        />
+        <View style={styles.navBar}>
+          <Button 
+            title="Zurück" 
+            disabled={currentScreen === 1} 
+            onPress={() => setCurrentScreen(currentScreen - 1)} 
+          />
+          <Text style={styles.navText}>Fenster: {currentScreen} / 10</Text>
+          <Button 
+            title="Weiter" 
+            disabled={currentScreen === 10} 
+            onPress={() => setCurrentScreen(currentScreen + 1)} 
+          />
+        </View>
       </View>
-    </View>
+    </TimerProvider>
   );
 }
 
