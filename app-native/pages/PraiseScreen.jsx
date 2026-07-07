@@ -4,7 +4,9 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function PraiseScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Fenster 9 (Lob nach jeder Übung)</Text>
+      <Text style={[styles.text, {fontSize: 40}]}>Excellent</Text>
+      <Text style={[styles.text, {marginTop: 15 }]}>You have done</Text>
+      <Text style={[styles.text, {marginTop: 15 }]}>n exercises</Text>
     </View>
   );
 }
@@ -18,6 +20,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: 400,
   },
 });
