@@ -1,9 +1,22 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Button, Animated } from 'react-native';
+import { StyleSheet, Text, View, Button, Animated, Image } from 'react-native';
 import { useTimerContext } from '../context/TimerContext';
 
 export default function TimerActiveScreen({ onNavigate }) {
-  const { remainingSeconds, isActive, stopTimer } = useTimerContext();
+  const { remainingSeconds, totalSeconds, isActive, stopTimer } = useTimerContext();
+  
+  const getFlowerImage = () => {
+    // If we have no total seconds yet or the timer is done
+    if (!totalSeconds || remainingSeconds === 0) return require('../assets/flower/Untitled-9.png');
+    
+    const progress = remainingSeconds / totalSeconds;
+    
+    if (progress > 0.66) return require('../assets/flower/Untitled-3.png');
+    if (progress > 0.33) return require('../assets/flower/Untitled-8.png');
+    if (progress > 0) return require('../assets/flower/Untitled-7.png');
+    
+    return require('../assets/flower/Untitled-9.png');
+  };
   
   // A simple pulse animation for the orange background
   const pulseAnim = React.useRef(new Animated.Value(0)).current;
@@ -32,7 +45,7 @@ export default function TimerActiveScreen({ onNavigate }) {
     <Animated.View style={[styles.container, { backgroundColor: isTimerRunning ? '#fff' : backgroundColor }]}>
       {isTimerRunning ? (
         <>
-          <Text style={styles.flower}>🌷</Text>
+          <Image source={getFlowerImage()} style={styles.flowerImage} />
           <Text style={styles.text}>Flow Timer Running...</Text>
           <View style={{ marginTop: 40 }}>
             <Button 
@@ -47,7 +60,7 @@ export default function TimerActiveScreen({ onNavigate }) {
         </>
       ) : (
         <>
-          <Text style={styles.flower}>🥀</Text>
+          <Image source={getFlowerImage()} style={styles.flowerImage} />
           <Text style={styles.text}>Time for a break!</Text>
           <View style={{ marginTop: 40 }}>
             <Button 
@@ -68,9 +81,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  flower: {
-    fontSize: 100,
+  flowerImage: {
+    width: 200,
+    height: 200,
     marginBottom: 20,
+    resizeMode: 'contain',
   },
   text: {
     fontSize: 24,

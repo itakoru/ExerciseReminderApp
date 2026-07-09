@@ -4,6 +4,7 @@ import { scheduleLocalTimerNotification, cancelAllTimers } from '../services/Not
 
 export function useTimer() {
   const [remainingSeconds, setRemainingSeconds] = useState(0);
+  const [totalSeconds, setTotalSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
   
   // We keep track of the time the timer should end
@@ -64,6 +65,7 @@ export function useTimer() {
     // 1. Set React UI State SYNCHRONOUSLY so the screen flips to "Running" instantly
     endTimeRef.current = Date.now() + (seconds * 1000);
     setRemainingSeconds(seconds);
+    setTotalSeconds(seconds);
     setIsActive(true);
 
     // 2. Schedule Native Local Notification in the background
@@ -79,6 +81,7 @@ export function useTimer() {
 
   return {
     remainingSeconds,
+    totalSeconds,
     isActive,
     startTimer,
     stopTimer
