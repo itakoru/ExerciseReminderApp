@@ -29,9 +29,9 @@ export default function App() {
       case 4: return <ExerciseInfoScreen onBack={() => setCurrentScreen(3)} onNext={() => setCurrentScreen(5)}/>;
       case 5: return <ExerciseDurationSetupScreen onBack={() => setCurrentScreen(4)} onNext={(exerciseData) => { setTimerSettings(prev => ({...prev, ...exerciseData})); setCurrentScreen(6); }} />;
       case 6: return <PauseTimeScreen onBack={() => setCurrentScreen(5)} onNext={(pauseData) => {setTimerSettings(prev => ({...prev, pauseData})); setCurrentScreen(7)}} />
-      case 7: return <ExerciseListScreen onBack={() => setCurrentScreen(6)} onNext={(exerciseId) => { setSelectedExerciseId(exerciseId); setCurrentScreen(8); }} />;
-      case 8: return <ExerciseDetailScreen exerciseId={selectedExerciseId} timerSettings={timerSettings} onBack={() => setCurrentScreen(7)} onFinish={() => setCurrentScreen(9)} />;
-      case 9: <TimerActiveScreen />;
+      case 7: <TimerActiveScreen />;
+      case 8: return <ExerciseListScreen onBack={() => setCurrentScreen(7)} onNext={(exerciseId) => { setSelectedExerciseId(exerciseId); setCurrentScreen(9); }} />;
+      case 9: return <ExerciseDetailScreen exerciseId={selectedExerciseId} timerSettings={timerSettings} onBack={() => setCurrentScreen(6)} onFinish={() => setCurrentScreen(10)} />;
       case 10: return <PraiseScreen onNext={() => setCurrentScreen(11)} again={() => setCurrentScreen(9)}/>;
       case 11: return <DailySuccessScreen onNext={() => setCurrentScreen(1)} />;
       default: return <Onboarding />;
