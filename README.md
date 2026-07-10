@@ -1,4 +1,4 @@
-#Projekt starten
+# Projekt starten
   
   in /app-native mit npx expo start
   
