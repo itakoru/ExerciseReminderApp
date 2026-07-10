@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Button, Text } from 'react-native';
 
 // 1. Hier werden alle deine 12 Fenster importiert
+import Onboarding from './pages/Onboarding';
 import FlowSetupScreen from './pages/FlowSetupScreen';
 import ExerciseDurationSetupScreen from './pages/ExerciseDurationSetupScreen';
 import ExerciseListScreen from './pages/ExerciseListScreen';
@@ -20,17 +21,18 @@ export default function App() {
   // Diese Funktion entscheidet, welches Fenster gezeichnet wird
   const renderScreen = () => {
     switch (currentScreen) {
-      case 1: return <FlowSetupScreen />;
-      case 2: return <ExerciseDurationSetupScreen />;
-      case 3: return <ExerciseListScreen />;
-      case 4: return <ExerciseInfoScreen />; // (3.1 in deiner Liste)
-      case 5: return <ReminderIntervalSetupScreen />;
-      case 6: return <TimerActiveScreen />;
-      case 7: return <ExerciseTimerScreen />;
-      case 8: return <ExerciseDetailScreen />;
-      case 9: return <PraiseScreen />;
-      case 10: return <DailySuccessScreen />;
-      default: return <FlowSetupScreen />;
+      case 1: return <Onboarding onNext={() => setCurrentScreen(2)} />;
+      case 2: return <FlowSetupScreen />;
+      case 3: return <ExerciseDurationSetupScreen />;
+      case 4: return <ExerciseListScreen />;
+      case 5: return <ExerciseInfoScreen />; // (3.1 in deiner Liste)
+      case 6: return <ReminderIntervalSetupScreen />;
+      case 7: return <TimerActiveScreen />;
+      case 8: return <ExerciseTimerScreen />;
+      case 9: return <ExerciseDetailScreen />;
+      case 10: return <PraiseScreen onNext={() => setCurrentScreen(11)} />;
+      case 11: return <DailySuccessScreen onNext={() => setCurrentScreen(1)} />;
+      default: return <Onboarding />;
     }
   };
 
