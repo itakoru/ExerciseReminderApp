@@ -7,6 +7,7 @@ export default function ExerciseDurationSetupScreen({ onBack, onNext }) {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>When should I remind you for your exercise?</Text>
+      
       <BackButton
         onPress={onBack}
       />
