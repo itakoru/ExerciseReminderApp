@@ -22,15 +22,15 @@ export default function App() {
   const renderScreen = () => {
     switch (currentScreen) {
       case 1: return <Onboarding onNext={() => setCurrentScreen(2)} />;
-      case 2: return <FlowSetupScreen />;
-      case 3: return <ExerciseDurationSetupScreen />;
+      case 2: return <ExerciseDurationSetupScreen onBack={() => setCurrentScreen(1)} onNext={() => setCurrentScreen(3)}/>;
+      case 3: return <FlowSetupScreen />;
       case 4: return <ExerciseListScreen />;
-      case 5: return <ExerciseInfoScreen />; // (3.1 in deiner Liste)
+      case 5: return <ExerciseInfoScreen />; 
       case 6: return <ReminderIntervalSetupScreen />;
       case 7: return <TimerActiveScreen />;
       case 8: return <ExerciseTimerScreen />;
       case 9: return <ExerciseDetailScreen />;
-      case 10: return <PraiseScreen onNext={() => setCurrentScreen(11)} />;
+      case 10: return <PraiseScreen onNext={() => setCurrentScreen(11)} again={() => setCurrentScreen(7)}/>;
       case 11: return <DailySuccessScreen onNext={() => setCurrentScreen(1)} />;
       default: return <Onboarding />;
     }
@@ -50,10 +50,10 @@ export default function App() {
           disabled={currentScreen === 1} 
           onPress={() => setCurrentScreen(currentScreen - 1)} 
         />
-        <Text style={styles.navText}>Fenster: {currentScreen} / 10</Text>
+        <Text style={styles.navText}>Fenster: {currentScreen} / 11</Text>
         <Button 
           title="Weiter" 
-          disabled={currentScreen === 10} 
+          disabled={currentScreen === 11} 
           onPress={() => setCurrentScreen(currentScreen + 1)} 
         />
       </View>

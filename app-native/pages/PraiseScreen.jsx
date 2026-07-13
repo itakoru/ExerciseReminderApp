@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Button from '../components/Button';
 
-export default function PraiseScreen({ onNext, n }) {
+export default function PraiseScreen({ onNext, n, again }) {
   return (
     <View style={styles.container}>
       <Text style={[styles.text, {fontSize: 40}]}>Excellent</Text>
@@ -11,7 +11,7 @@ export default function PraiseScreen({ onNext, n }) {
       <View style={styles.buttonGroup}>
         <Button 
           title="Next" 
-          onPress={() => console.log('Next')}
+          onPress={again}
         />
           <Button 
           title="Done for today" 

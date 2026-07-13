@@ -1,10 +1,18 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import BackButton from '../components/BackButton';
+import Button from '../components/Button';
 
-export default function ExerciseDurationSetupScreen() {
+export default function ExerciseDurationSetupScreen({ onBack, onNext }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Fenster 2 (Übungsdauer)</Text>
+      <Text style={styles.text}>When should I remind you for your exercise?</Text>
+      <BackButton
+        onPress={onBack}
+      />
+      <Button
+        title="Next" 
+        onPress={onNext}/>
     </View>
   );
 }
