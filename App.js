@@ -23,9 +23,9 @@ export default function App() {
     switch (currentScreen) {
       case 1: return <Onboarding onNext={() => setCurrentScreen(2)} />;
       case 2: return <ExerciseDurationSetupScreen onBack={() => setCurrentScreen(1)} onNext={() => setCurrentScreen(3)}/>;
-      case 4: return <FlowSetupScreen />;
+      case 4: return <FlowSetupScreen onBack={() => setCurrentScreen(3)} onNext={() => setCurrentScreen(5)}/>;
       case 8: return <ExerciseListScreen />;
-      case 5: return <ExerciseInfoScreen />; 
+      case 5: return <ExerciseInfoScreen onBack={() => setCurrentScreen(4)} onNext={() => setCurrentScreen(6)}/>;
       case 6: return <ReminderIntervalSetupScreen />;
       case 7: return <TimerActiveScreen />;
       case 3: return <ExerciseTimerScreen onBack={() => setCurrentScreen(2)} onNext={() => setCurrentScreen(4)}/>;
