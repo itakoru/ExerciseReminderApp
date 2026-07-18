@@ -1,13 +1,24 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import BackButton from '../components/BackButton';
 import Button from '../components/Button';
+import TimeInput from '../components/TimeInput';
 
 export default function ExerciseDurationSetupScreen({ onBack, onNext }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>When should I remind you for your exercise?</Text>
+      <Text style={styles.textBold}>When should I remind{"\n"}you for your exercise?</Text>
       
+      <Text style={[styles.textReg, {marginTop: 50}]}>Remind</Text>
+
+      <TimeInput/>
+
+      <Text style={[styles.textReg, {marginBottom: 50}]}>Let the flower blooming</Text>
+
+      <Image source={require('../assets/flower/Untitled-3.png')}
+            style={styles.image}
+            />
+
       <BackButton
         onPress={onBack}
       />
@@ -25,8 +36,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  text: {
+  textBold: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: '#736655',
+    textAlign: 'center',
+  },
+  textReg: {
+    fonsize: 16,
+    fontWeight: '400',
+    color: '#7B7163',
+    textAlign: 'center',
+  },
+  image: {
+    marginBottom: 50,
+    width: 120,
+    height: 120,
+    resizeMode: 'contain',
   },
 });

@@ -7,12 +7,12 @@ export default function Onboarding({ onNext }) {
     <View style={styles.container}>
       <Text style={[styles.textBold, styles.abstand]}>Welcome to {"\n"} Your Back Health Journey</Text>
       <Text style={[styles.textReg, styles.abstand]}>I am an app designed to promote {"\n"} your back health</Text>
-      <Text style={[styles.textReg, styles.abstand]}>Simply pick your {"\n"} focus time and exercise intrervals {"\n"} and do whatever you want</Text>
+      <Text style={[styles.textReg, styles.abstand]}>Simply pick your {"\n"} focus time and exercise intervals {"\n"} and do whatever you want</Text>
       <Image source={require('../assets/flower/Untitled-11.png')}
       style={styles.image}
       />
       <Text style={[styles.textBold, styles.abstand, { marginTop: 15 }]}>Your Flower is You</Text>
-      <Text style={[styles.textReg, styles.abstand]}>The timer runs in the backround {"\n"} and will ring when it is time. {"\n"} Do an exercise and {"\n"} see your flower bloom again!</Text>
+      <Text style={[styles.textReg, styles.abstand]}>The timer runs in the background {"\n"} and will ring when it is time. {"\n"} Do an exercise and {"\n"} see your flower bloom again!</Text>
       <Button 
         title="Start" 
         onPress={onNext}
@@ -31,19 +31,21 @@ const styles = StyleSheet.create({
   textBold: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#737373',
+    color: '#736655',
     textAlign: 'center',
   },
   textReg: {
     fonsize: 20,
     fontWeight: '400',
-    color: '#CCCCCC',
+    color: '#7B7163',
     textAlign: 'center',
   },
   abstand: {
     marginBottom: 15,
   },
   image: {
+    marginTop: 30,
+    marginBottom: 30,
     width: 120,
     height: 120,
     resizeMode: 'contain',

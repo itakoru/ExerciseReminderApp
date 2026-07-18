@@ -14,23 +14,9 @@ export default function Button({ title, onPress, extraStyle }){
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 10,
-    paddingBottom: 20, 
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonContainer: {
-    width: '100%',
-    alignItems: 'center',     
-    marginBottom: 30,         
-  },
   button: {
+    position:'absolute',
+    bottom: 30,
     backgroundColor: '#759579',
     paddingVertical: 12,
     borderRadius: 5,

@@ -9,9 +9,7 @@ export default function FlowSetupScreen({ onNext, onBack }) {
     <View style={styles.container}>
       <Text style={styles.text}>When can I remind you in your flow state?</Text>
 
-      <Dropdown
 
-      />
 
       <Button 
       title="Next"
