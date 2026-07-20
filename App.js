@@ -17,19 +17,21 @@ import DailySuccessScreen from './pages/DailySuccessScreen';
 export default function App() {
   // TIPP: Ändere die Zahl hier (1 bis 11), um das jeweilige Fenster live zu sehen!
   const [currentScreen, setCurrentScreen] = useState(1);
+  const [selectedExerciseId, setSelectedExerciseId] = useState(null);
+  const [timerSettings, setTimerSettings] = useState({ exerciseSeconds: 45, pauseSeconds: 15 });
 
   // Diese Funktion entscheidet, welches Fenster gezeichnet wird
   const renderScreen = () => {
     switch (currentScreen) {
       case 1: return <Onboarding onNext={() => setCurrentScreen(2)} />;
-      case 2: return <ExerciseDurationSetupScreen onBack={() => setCurrentScreen(1)} onNext={() => setCurrentScreen(3)}/>;
+      case 2: return <ReminderIntervalSetupScreen onBack={() => setCurrentScreen(1)} onNext={() => setCurrentScreen(3)}/>;
       case 4: return <FlowSetupScreen onBack={() => setCurrentScreen(3)} onNext={() => setCurrentScreen(5)}/>;
-      case 8: return <ExerciseListScreen />;
+      case 8: return <ExerciseListScreen onBack={() => setCurrentScreen(7)} onNext={(exerciseId) => { setSelectedExerciseId(exerciseId); setCurrentScreen(9); }} />;
       case 5: return <ExerciseInfoScreen onBack={() => setCurrentScreen(4)} onNext={() => setCurrentScreen(6)}/>;
-      case 6: return <ReminderIntervalSetupScreen />;
+      case 6: return <ExerciseDurationSetupScreen onBack={() => setCurrentScreen(5)} onNext={(settings) => { setTimerSettings(settings); setCurrentScreen(7); }} />;
       case 7: return <TimerActiveScreen />;
       case 3: return <ExerciseTimerScreen onBack={() => setCurrentScreen(2)} onNext={() => setCurrentScreen(4)}/>;
-      case 9: return <ExerciseDetailScreen />;
+      case 9: return <ExerciseDetailScreen exerciseId={selectedExerciseId} timerSettings={timerSettings} onBack={() => setCurrentScreen(8)} onFinish={() => setCurrentScreen(10)} />;
       case 10: return <PraiseScreen onNext={() => setCurrentScreen(11)} again={() => setCurrentScreen(7)}/>;
       case 11: return <DailySuccessScreen onNext={() => setCurrentScreen(1)} />;
       default: return <Onboarding />;

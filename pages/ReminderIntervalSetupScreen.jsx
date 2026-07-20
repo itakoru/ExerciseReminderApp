@@ -1,10 +1,19 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import BackButton from '../components/BackButton';
+import Button from '../components/Button';
 
-export default function ReminderIntervalSetupScreen() {
+export default function ReminderIntervalSetupScreen({ onBack, onNext }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Fenster 5 (Intervall Setup)</Text>
+      <Text style={styles.text}>When should I remind you for your exercise?</Text>
+      
+      <BackButton
+        onPress={onBack}
+      />
+      <Button
+        title="Next" 
+        onPress={onNext}/>
     </View>
   );
 }

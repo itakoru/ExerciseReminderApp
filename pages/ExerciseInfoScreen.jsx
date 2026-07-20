@@ -1,60 +1,43 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import ExerciseCard from '../components/ExerciseCard';
 import { exercises } from '../data/exercises';
 
+// auf dieser Seite werden nur die ersten sechs Übungen gezeigt
+const visibleExercises = exercises.slice(0, 6);
+
 export default function ExerciseInfoScreen({ onNext, onBack }) {
-  const [searchQuery, setSearchQuery] = useState('');
+  // speichert, welche Karte gerade umgedreht ist
   const [selectedExerciseId, setSelectedExerciseId] = useState(null);
+  // merkt sich, dass die automatische Vorschau nur einmal läuft
+  const hasShownPreview = useRef(false);
 
-  // useMemo merkt sich die Liste
-  // so wird sie nur neu gerechnet, wenn sich die Suche ändert
-  const visibleExercises = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-
-    // ohne Suche zeigen wir nur 6 Übungen
-    if (!query) {
-      return exercises.slice(0, 6);
-    }
-
-    // mit Suche wird alles durchsucht
-    return exercises.filter((exercise) => {
-      const searchableText = [exercise.name, exercise.description, exercise.benefit, exercise.bodyPart, exercise.type]
-        .join(' ')
-        .toLowerCase();
-
-      return searchableText.includes(query);
-    });
-  }, [searchQuery]);
-
+  // dreht beim Öffnen kurz die erste Karte um und wieder zurück
   useEffect(() => {
-    if (!visibleExercises.length) {
-      setSelectedExerciseId(null);
-      return;
+    if (hasShownPreview.current) {
+      return undefined;
     }
 
-    const selectedStillVisible = visibleExercises.some((exercise) => exercise.id === selectedExerciseId);
+    hasShownPreview.current = true;
+    const showBack = setTimeout(() => setSelectedExerciseId(visibleExercises[0].id), 350);
+    const showFront = setTimeout(() => setSelectedExerciseId(null), 2250);
 
-    if (!selectedExerciseId || !selectedStillVisible) {
-      setSelectedExerciseId(visibleExercises[0].id);
-    }
-  }, [selectedExerciseId, visibleExercises]);
+    return () => {
+      clearTimeout(showBack);
+      clearTimeout(showFront);
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Exercise Info</Text>
+      <BackButton onPress={onBack} />
+      <View style={styles.header}>
+        <Text style={styles.title}>What to expect</Text>
+      </View>
 
-      <TextInput
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        placeholder="Search by exercise, body part, or type"
-        placeholderTextColor="#7a7a7a"
-        style={styles.searchInput}
-      />
-
-      {/* hier kommen die Übungs-Karten */}
+      {/* zeigt die sechs Übungen als Karten in zwei Spalten */}
       <FlatList
         data={visibleExercises}
         keyExtractor={(item) => item.id}
@@ -62,6 +45,7 @@ export default function ExerciseInfoScreen({ onNext, onBack }) {
         columnWrapperStyle={styles.columnWrapper}
         contentContainerStyle={styles.grid}
         renderItem={({ item }) => {
+          // nur die ausgewählte Karte zeigt ihre Rückseite
           const isSelected = selectedExerciseId === item.id;
 
           return (
@@ -69,68 +53,26 @@ export default function ExerciseInfoScreen({ onNext, onBack }) {
               item={item}
               isSelected={isSelected}
               onPress={() => setSelectedExerciseId(isSelected ? null : item.id)}
+              animationDuration={900}
             />
           );
         }}
-        ListEmptyComponent={<Text style={styles.emptyText}>No exercises found.</Text>}
       />
 
+      {/* führt zur nächsten Seite */}
       <View style={styles.actions}>
-        <Button
-          title="Start"
-          onPress={onNext}
-        />
-
-        <BackButton
-          onPress={onBack}
-        />
+        <Button title="Start" onPress={onNext} extraStyle={{ width: '100%' }} />
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: 24,
-    paddingHorizontal: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '800',
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-    marginTop: 6,
-    marginBottom: 14,
-  },
-  searchInput: {
-    borderWidth: 1,
-    borderColor: '#d7d7d7',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 11,
-    marginBottom: 16,
-    backgroundColor: '#fafafa',
-  },
-  grid: {
-    paddingBottom: 20,
-  },
-  columnWrapper: {
-    justifyContent: 'space-between',
-    marginBottom: 14,
-  },
-  emptyText: {
-    textAlign: 'center',
-    color: '#666',
-    marginTop: 24,
-  },
-  actions: {
-    paddingTop: 4,
-    paddingBottom: 12,
-  },
+  container: { flex: 1, backgroundColor: '#fff', paddingTop: 24, paddingHorizontal: 16 },
+  header: { paddingTop: 32, paddingBottom: 16, alignItems: 'center' },
+  title: { fontSize: 24, fontWeight: '800', color: '#233126' },
+  subtitle: { fontSize: 14, color: '#667066', textAlign: 'center', marginTop: 6 },
+  grid: { paddingBottom: 20 },
+  columnWrapper: { justifyContent: 'space-between', marginBottom: 14 },
+  actions: { paddingTop: 4, paddingBottom: 12, width: '100%' },
 });
