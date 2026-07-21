@@ -19,7 +19,6 @@ export default function TimeInput({ onTimeChange }) {
                 <TextInput
                 style={styles.input}
                 keyboardType="numbers-and-punctuation"
-                placeholderTextColor="#999"
                 value={time}
                 onChangeText={handleChange} 
                 />

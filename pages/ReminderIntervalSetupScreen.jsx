@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import BackButton from '../components/BackButton';
 import Button from '../components/Button';
+import TimeInput from '../components/TimeInput';
 
 export default function ReminderIntervalSetupScreen({ onBack, onNext }) {
   const [reminderTime, setReminderTime] = useState('14:00')
 
-  const handleFunish = () => {
+  const handleFinish = () => {
     if (onNext) {
       onNext({ reminderTime: reminderTime })
     }
@@ -16,8 +17,8 @@ export default function ReminderIntervalSetupScreen({ onBack, onNext }) {
     <View style={styles.container}>
       <Text style={styles.textBold}>When should I remind{"\n"}you for your exercise?</Text>
       
-      <Text style={[styles.textReg, {marginBottom: 50}]}>Let the flower blooming</Text>
-      
+      <Text style={[styles.textReg, {marginTop: 50}]}>Remind me</Text>
+
       <TimeInput onTimeChange={(newTime) => setReminderTime(newTime)} />
 
       <Text style={[styles.textReg, {marginBottom: 50}]}>Let the flower blooming</Text>
@@ -31,7 +32,7 @@ export default function ReminderIntervalSetupScreen({ onBack, onNext }) {
       />
       <Button
         title="Next" 
-        onPress={onNext}/>
+        onPress={handleFinish}/>
     </View>
   );
 }
