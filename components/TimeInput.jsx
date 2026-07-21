@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, Text, View } from 'react-native';
 
-export default function TimeInput() {
-  const [text, setText] = useState('');
+export default function TimeInput({ onTimeChange }) {
+  const [time, setTime] = useState('14:00');
+
+  const handleChange = (text) => {
+    setTime(text)
+    if (onTimeChange) {
+      onTimeChange(text)
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -11,10 +18,10 @@ export default function TimeInput() {
             <View>
                 <TextInput
                 style={styles.input}
-                placeholder="Schreibe etwas..."
+                keyboardType="numbers-and-punctuation"
                 placeholderTextColor="#999"
-                value={text}
-                onChangeText={(value) => setText(value)} // Aktualisiert den State
+                value={time}
+                onChangeText={handleChange} 
                 />
         </View>
         <Text style={styles.unitText}>min</Text>

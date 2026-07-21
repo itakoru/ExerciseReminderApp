@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-export default function Dropdown() {
+export default function Dropdown({selectedValue='5', onSelect, options=['1', '3', '5', '7', '15'], unit= 'min'}) {
     const [isOpen, setIsOpen] = useState(false)
-    const [selectedValue, setValue] = useState('Choose time')
 
-    const options=['1', '3', '5', '7', '15']
     let listContent = undefined
 
     if (isOpen) {
@@ -16,7 +14,7 @@ export default function Dropdown() {
                     key={index}
                     style={styles.option}
                     onPress={() => {
-                        setValue(value)
+                        if (onSelect) onSelect(value)
                         setIsOpen(false)
                     }}
                     >
@@ -37,7 +35,7 @@ export default function Dropdown() {
                     {listContent}
                 </TouchableOpacity>
 
-                <Text style={styles.unitText}>min</Text>
+                <Text style={styles.unitText}>{unit}</Text>
             </View>
         </View>
     )

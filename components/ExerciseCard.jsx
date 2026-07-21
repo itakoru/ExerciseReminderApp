@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { exerciseImages } from '../data/exerciseImages';
 
-export default function ExerciseCard({ item, isSelected, onPress }) {
+export default function ExerciseCard({ item, isSelected, onPress, size = 'default', animationDuration = 350 }) {
     // merkt sich die Drehung von vorne nach hinten
     const flipAnimation = useRef(new Animated.Value(isSelected ? 1 : 0)).current;
     const [showDescription, setShowDescription] = useState(false);
@@ -11,10 +11,10 @@ export default function ExerciseCard({ item, isSelected, onPress }) {
         // dreht die Karte wenn sie ausgewählt wird
         Animated.timing(flipAnimation, {
             toValue: isSelected ? 1 : 0,
-            duration: 350,
+            duration: animationDuration,
             useNativeDriver: true,
         }).start();
-    }, [flipAnimation, isSelected]);
+    }, [animationDuration, flipAnimation, isSelected]);
 
     // vordere seite mit Bild
     const frontRotate = flipAnimation.interpolate({
@@ -44,7 +44,8 @@ export default function ExerciseCard({ item, isSelected, onPress }) {
     const imageSource = exerciseImages[item.id];
 
     return (
-        <Pressable style={styles.cardOuter} onPress={onPress}>
+        <View style={[styles.cardOuter, size === 'large' && styles.largeCardOuter]}>
+            <Pressable style={[styles.card, size === 'large' && styles.largeCard]} onPress={onPress}>
             {/* vordere seite mit Bild */}
             <Animated.View
                 style={[
@@ -56,8 +57,8 @@ export default function ExerciseCard({ item, isSelected, onPress }) {
                     },
                 ]}
             >
-                <Image source={imageSource} style={styles.image} resizeMode="contain" />
-                <Text style={styles.name}>{item.name}</Text>
+                <Image source={imageSource} style={[styles.image, size === 'large' && styles.largeImage]} resizeMode="contain" />
+                <Text style={[styles.name, size === 'large' && styles.largeName]}>{item.name}</Text>
             </Animated.View>
 
             {/* hintere seite mit Text */}
@@ -71,7 +72,7 @@ export default function ExerciseCard({ item, isSelected, onPress }) {
                     },
                 ]}
             >
-                <Text style={styles.name}>{item.name}</Text>
+                <Text style={[styles.name, size === 'large' && styles.largeName]}>{item.name}</Text>
                 <Text style={styles.benefit}>{item.benefit}</Text>
                 <View style={styles.descriptionBox}>
                     <Pressable onPress={() => setShowDescription(!showDescription)}>
@@ -87,15 +88,26 @@ export default function ExerciseCard({ item, isSelected, onPress }) {
                     )}
                 </View>
             </Animated.View>
-        </Pressable>
+            </Pressable>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     cardOuter: {
         width: '48%',
-        height: 240,
         marginBottom: 14,
+    },
+    card: {
+        height: 240,
+        position: 'relative',
+    },
+    largeCardOuter: {
+        width: '100%',
+        marginBottom: 20,
+    },
+    largeCard: {
+        height: 330,
     },
     cardFace: {
         position: 'absolute',
@@ -148,11 +160,17 @@ const styles = StyleSheet.create({
         height: 110,
         marginBottom: 10,
     },
+    largeImage: {
+        height: 170,
+    },
     name: {
         fontSize: 15,
         fontWeight: '700',
         textAlign: 'center',
         marginBottom: 4,
+    },
+    largeName: {
+        fontSize: 21,
     },
     benefit: {
         fontSize: 12,
