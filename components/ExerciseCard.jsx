@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { exerciseImages } from '../data/exerciseImages';
 
 export default function ExerciseCard({ item, isSelected, onPress, size = 'default', animationDuration = 350 }) {
@@ -44,52 +44,72 @@ export default function ExerciseCard({ item, isSelected, onPress, size = 'defaul
     const imageSource = exerciseImages[item.id];
 
     return (
-        <View style={[styles.cardOuter, size === 'large' && styles.largeCardOuter]}>
-            <Pressable style={[styles.card, size === 'large' && styles.largeCard]} onPress={onPress}>
-            {/* vordere seite mit Bild */}
-            <Animated.View
-                style={[
-                    styles.cardFace,
-                    styles.cardFront,
-                    {
-                        opacity: frontOpacity,
-                        transform: [{ perspective: 1000 }, { rotateY: frontRotate }],
-                    },
-                ]}
-            >
-                <Image source={imageSource} style={[styles.image, size === 'large' && styles.largeImage]} resizeMode="contain" />
-                <Text style={[styles.name, size === 'large' && styles.largeName]}>{item.name}</Text>
-            </Animated.View>
+        <>
+            <View style={[styles.cardOuter, size === 'large' && styles.largeCardOuter]}>
+                <Pressable style={[styles.card, size === 'large' && styles.largeCard]} onPress={onPress}>
+                    {/* vordere seite mit Bild */}
+                    <Animated.View
+                        style={[
+                            styles.cardFace,
+                            styles.cardFront,
+                            {
+                                opacity: frontOpacity,
+                                transform: [{ perspective: 1000 }, { rotateY: frontRotate }],
+                            },
+                        ]}
+                    >
+                        <Image source={imageSource} style={[styles.image, size === 'large' && styles.largeImage]} resizeMode="contain" />
+                        <Text style={[styles.name, size === 'large' && styles.largeName]}>{item.name}</Text>
+                    </Animated.View>
 
-            {/* hintere seite mit Text */}
-            <Animated.View
-                style={[
-                    styles.cardFace,
-                    styles.cardBack,
-                    {
-                        opacity: backOpacity,
-                        transform: [{ perspective: 1000 }, { rotateY: backRotate }],
-                    },
-                ]}
-            >
-                <Text style={[styles.name, size === 'large' && styles.largeName]}>{item.name}</Text>
-                <Text style={styles.benefit}>{item.benefit}</Text>
-                <View style={styles.descriptionBox}>
-                    <Pressable onPress={() => setShowDescription(!showDescription)}>
-                        <Text style={styles.descriptionTitle}>
-                            {showDescription ? '▼ How to do it' : '▶ How to do it'}
-                        </Text>
-                    </Pressable>
+                    {/* hintere seite mit Text */}
+                    <Animated.View
+                        style={[
+                            styles.cardFace,
+                            styles.cardBack,
+                            {
+                                opacity: backOpacity,
+                                transform: [{ perspective: 1000 }, { rotateY: backRotate }],
+                            },
+                        ]}
+                    >
+                        <Text style={[styles.name, size === 'large' && styles.largeName]}>{item.name}</Text>
+                        <Text style={styles.benefit}>{item.benefit}</Text>
+                        <View style={styles.descriptionBox}>
+                            <Pressable onPress={() => setShowDescription(true)}>
+                                <Text style={styles.descriptionTitle}>How to do it</Text>
+                            </Pressable>
+                        </View>
+                    </Animated.View>
+                </Pressable>
+            </View>
 
-                    {showDescription && (
-                        <Text style={styles.description}>
-                            {item.description}
-                        </Text>
-                    )}
+            {/* zeigt die Übungsanleitung als Dialog über der Karte */}
+            <Modal
+                animationType="fade"
+                statusBarTranslucent
+                transparent
+                visible={showDescription}
+                onRequestClose={() => setShowDescription(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <Pressable
+                        accessibilityLabel="Close exercise instructions"
+                        accessibilityRole="button"
+                        onPress={() => setShowDescription(false)}
+                        style={StyleSheet.absoluteFill}
+                    />
+                    <View accessibilityViewIsModal style={styles.modalContent}>
+                        <Text style={styles.modalEyebrow}>How to do it</Text>
+                        <Text style={styles.modalTitle}>{item.name}</Text>
+                        <Text selectable style={styles.modalDescription}>{item.description}</Text>
+                        <Pressable style={styles.modalCloseButton} onPress={() => setShowDescription(false)}>
+                            <Text style={styles.modalCloseText}>Close</Text>
+                        </Pressable>
+                    </View>
                 </View>
-            </Animated.View>
-            </Pressable>
-        </View>
+            </Modal>
+        </>
     );
 }
 
@@ -123,6 +143,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backfaceVisibility: 'hidden',
+        overflow: 'hidden',
     },
     cardFront: {
         backgroundColor: '#fff',
@@ -147,13 +168,53 @@ const styles = StyleSheet.create({
         color: '#5E8A63',
         textTransform: 'uppercase',
         letterSpacing: 0.8,
-        marginBottom: 6,
+        textAlign: 'center',
     },
-    description: {
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 24,
+        backgroundColor: 'rgba(20, 30, 22, 0.55)',
+    },
+    modalContent: {
+        width: '100%',
+        maxWidth: 480,
+        alignSelf: 'center',
+        padding: 24,
+        borderRadius: 20,
+        backgroundColor: '#fff',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
+    },
+    modalEyebrow: {
         fontSize: 12,
-        lineHeight: 18,
+        fontWeight: '800',
+        color: '#5E8A63',
+        textTransform: 'uppercase',
+        letterSpacing: 1,
+    },
+    modalTitle: {
+        marginTop: 8,
+        fontSize: 22,
+        fontWeight: '800',
+        color: '#233126',
+    },
+    modalDescription: {
+        marginTop: 14,
+        fontSize: 17,
+        lineHeight: 25,
         color: '#333',
-        textAlign: 'left',
+    },
+    modalCloseButton: {
+        alignItems: 'center',
+        marginTop: 22,
+        paddingVertical: 14,
+        borderRadius: 12,
+        backgroundColor: '#5E8A63',
+    },
+    modalCloseText: {
+        fontSize: 16,
+        fontWeight: '800',
+        color: '#fff',
     },
     image: {
         width: '100%',
