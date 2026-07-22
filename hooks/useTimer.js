@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
-import { scheduleLocalTimerNotification, cancelAllTimers } from '../services/NotificationService';
+import { scheduleLocalTimerNotification, cancelTimer } from '../services/NotificationService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function useTimer() {
   const [remainingSeconds, setRemainingSeconds] = useState(0);
@@ -10,9 +11,35 @@ export function useTimer() {
   // We keep track of the time the timer should end
   const endTimeRef = useRef(null);
   const intervalRef = useRef(null);
-  
+
   // AppState tracking to fix the UI when coming back from background
   const appState = useRef(AppState.currentState);
+
+  // Restore Timer from AsyncStorage on Boot
+  useEffect(() => {
+    const restoreTimer = async () => {
+      try {
+        const savedEnd = await AsyncStorage.getItem('activeFlowTimerEnd');
+        if (savedEnd) {
+          const end = Number(savedEnd);
+          if (end > Date.now()) {
+            endTimeRef.current = end;
+            setIsActive(true);
+            const savedTotal = await AsyncStorage.getItem('activeFlowTimerTotal');
+            setTotalSeconds(savedTotal ? Number(savedTotal) : Math.ceil((end - Date.now()) / 1000));
+            setRemainingSeconds(Math.ceil((end - Date.now()) / 1000));
+          } else {
+            // Timer expired while closed
+            await AsyncStorage.removeItem('activeFlowTimerEnd');
+            await AsyncStorage.removeItem('activeFlowTimerTotal');
+          }
+        }
+      } catch (e) {
+        console.log("Failed to restore timer", e);
+      }
+    };
+    restoreTimer();
+  }, []);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
@@ -63,21 +90,30 @@ export function useTimer() {
 
   const startTimer = async (seconds) => {
     // 1. Set React UI State SYNCHRONOUSLY so the screen flips to "Running" instantly
-    endTimeRef.current = Date.now() + (seconds * 1000);
+    const end = Date.now() + (seconds * 1000);
+    endTimeRef.current = end;
     setRemainingSeconds(seconds);
     setTotalSeconds(seconds);
     setIsActive(true);
 
-    // 2. Schedule Native Local Notification in the background
+    // 2. Persist to Hard Drive for cold-start recovery
+    AsyncStorage.setItem('activeFlowTimerEnd', String(end));
+    AsyncStorage.setItem('activeFlowTimerTotal', String(seconds));
+
+    // 3. Schedule Native Local Notification in the background
     await scheduleLocalTimerNotification(seconds);
   };
 
   const stopTimer = async () => {
-    await cancelAllTimers();
+    await cancelTimer('default-timer');
     setIsActive(false);
     setRemainingSeconds(0);
     setTotalSeconds(0);
     endTimeRef.current = null;
+    
+    // Clear Hard Drive memory
+    AsyncStorage.removeItem('activeFlowTimerEnd');
+    AsyncStorage.removeItem('activeFlowTimerTotal');
   };
 
   return {

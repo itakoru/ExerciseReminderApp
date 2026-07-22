@@ -74,6 +74,14 @@ export async function cancelAllTimers() {
   await Notifications.cancelAllScheduledNotificationsAsync();
 }
 
+export async function cancelTimer(identifier) {
+  try {
+    await Notifications.cancelScheduledNotificationAsync(identifier);
+  } catch (error) {
+    console.error(`Failed to cancel timer ${identifier}`, error);
+  }
+}
+
 export async function scheduleDailyReminder(hour, minute) {
   try {
     const id = await Notifications.scheduleNotificationAsync({

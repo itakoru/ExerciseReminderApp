@@ -3,28 +3,13 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import TimeInput from '../components/TimeInput';
-import { scheduleLocalTimerNotification } from '../services/NotificationService';
 
-export default function ReminderIntervalSetupScreen({ onBack, onNext }) {
-  const [reminderTime, setReminderTime] = useState('60')
+export default function ReminderIntervalSetupScreen({ initialReminderTime = '60', onBack, onNext }) {
+  const [reminderTime, setReminderTime] = useState(initialReminderTime)
 
   const handleFinish = async () => {
-    try {
-      const minutes = Number(reminderTime);
-      if (minutes > 0) {
-        await scheduleLocalTimerNotification(
-          minutes * 60, 
-          "Daily Exercise Check-in", 
-          "Hey! Don't forget to get some exercises in today!", 
-          "exercise-reminder" // Unique identifier!
-        );
-      }
-    } catch (e) {
-      console.log("Failed to schedule reminder", e);
-    }
-
     if (onNext) {
-      onNext({ reminderTime: reminderTime })
+      onNext({ reminderTime: reminderTime });
     }
   }
 
