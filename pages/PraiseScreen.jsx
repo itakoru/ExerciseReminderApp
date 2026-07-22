@@ -8,16 +8,17 @@ export default function PraiseScreen({ onNext, n, again }) {
       <Text style={[styles.text, {fontSize: 40}]}>Excellent</Text>
       <Text style={[styles.text, {marginTop: 15 }]}>You have done</Text>
       <Text style={[styles.text, {marginTop: 15 }]}>{n} exercises</Text>
-      <View style={styles.buttonGroup}>
+      
         <Button 
           title="Next" 
           onPress={again}
+          extraStyle={styles.topBottom}
         />
           <Button 
           title="Done for today" 
           onPress={onNext}
+          extraStyle={styles.bottomButton}
         />
-      </View>
     </View>
   );
 }
@@ -33,10 +34,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '400',
   },
-  buttonGroup: {
-    marginTop: 40,
-    width: '100%',
-    alignItems: 'center',
-    gap: 15,
+  topBottom: {
+    bottom: 90,
+  },
+  bottomButton: {
+    backgroundColor: '#607062'
   }
 });
