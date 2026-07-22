@@ -14,6 +14,7 @@ import PraiseScreen from './pages/PraiseScreen';
 import DailySuccessScreen from './pages/DailySuccessScreen';
 import PauseTimeScreen from './pages/PauseTimeScreen';
 import { TimerProvider } from './context/TimerContext';
+import { registerForPushNotificationsAsync } from './services/NotificationService';
 
 export default function App() {
   // TIPP: Ändere die Zahl hier (1 bis 11), um das jeweilige Fenster live zu sehen!
@@ -22,6 +23,11 @@ export default function App() {
   const [selectedExerciseId, setSelectedExerciseId] = useState(undefined);
   const [timerSettings, setTimerSettings] = useState({ exerciseSeconds: 45, pauseSeconds: 15 });
   const [flowMinutes, setFlowMinutes] = useState(45);
+
+  React.useEffect(() => {
+    // Required for iOS! Will prompt the user to allow notifications.
+    registerForPushNotificationsAsync();
+  }, []);
 
   const navigateTo = (screen) => {
     setPreviousScreen(currentScreen);
