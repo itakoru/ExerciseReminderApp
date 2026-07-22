@@ -1,19 +1,23 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import Dropdown from '../components/Dropdown';
+import TimeInput from '../components/TimeInput';
 
-export default function FlowSetupScreen({ onNext, onBack }) {
+export default function FlowSetupScreen({ initialFlowMinutes = '45', onNext, onBack }) {
+  const [flowMinutes, setFlowMinutes] = useState(initialFlowMinutes);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>When can I remind you in your flow state?</Text>
+      <Text style={[styles.text, { textAlign: 'center' }]}>When can I remind you{"\n"}in your flow state?</Text>
 
-
+      <Text style={{ fontSize: 16, color: '#7B7163', marginTop: 50 }}>Remind me</Text>
+      <TimeInput initialValue={flowMinutes} onTimeChange={setFlowMinutes} />
 
       <Button 
       title="Next"
-      onPress={ onNext }
+      onPress={() => onNext && onNext({ flowMinutes })}
       />
 
       <BackButton
@@ -27,12 +31,14 @@ export default function FlowSetupScreen({ onNext, onBack }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    paddingTop: '35%',
     alignItems: 'center',
     backgroundColor: '#fff',
+    paddingBottom: 80,
   },
   text: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: '#233126',
   },
 });

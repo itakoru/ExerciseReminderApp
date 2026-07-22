@@ -3,11 +3,26 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import TimeInput from '../components/TimeInput';
+import { scheduleLocalTimerNotification } from '../services/NotificationService';
 
 export default function ReminderIntervalSetupScreen({ onBack, onNext }) {
-  const [reminderTime, setReminderTime] = useState('14:00')
+  const [reminderTime, setReminderTime] = useState('60')
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
+    try {
+      const minutes = Number(reminderTime);
+      if (minutes > 0) {
+        await scheduleLocalTimerNotification(
+          minutes * 60, 
+          "Daily Exercise Check-in", 
+          "Hey! Don't forget to get some exercises in today!", 
+          "exercise-reminder" // Unique identifier!
+        );
+      }
+    } catch (e) {
+      console.log("Failed to schedule reminder", e);
+    }
+
     if (onNext) {
       onNext({ reminderTime: reminderTime })
     }
@@ -15,13 +30,13 @@ export default function ReminderIntervalSetupScreen({ onBack, onNext }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.textBold}>When should I remind{"\n"}you for your exercise?</Text>
+      <Text style={styles.textBold}>When should I remind{"\n"}you to do your exercises?</Text>
       
       <Text style={[styles.textReg, {marginTop: 50}]}>Remind me</Text>
 
-      <TimeInput onTimeChange={(newTime) => setReminderTime(newTime)} />
+      <TimeInput initialValue={reminderTime} onTimeChange={setReminderTime} />
 
-      <Text style={[styles.textReg, {marginBottom: 50}]}>Let the flower blooming</Text>
+      <Text style={[styles.textReg, {marginBottom: 20}]}>Let the flower bloom!</Text>
       
       <Image source={require('../assets/flower/Untitled-3.png')}
       style={styles.image}
@@ -40,26 +55,27 @@ export default function ReminderIntervalSetupScreen({ onBack, onNext }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    paddingTop: '35%',
     alignItems: 'center',
     backgroundColor: '#fff',
+    paddingBottom: 80, // Padding to avoid hitting the bottom buttons
   },
   textBold: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#736655',
+    color: '#233126',
     textAlign: 'center',
   },
   textReg: {
-    fonsize: 16,
+    fontSize: 16,
     fontWeight: '400',
     color: '#7B7163',
     textAlign: 'center',
   },
   image: {
-    marginBottom: 50,
     width: 120,
     height: 120,
     resizeMode: 'contain',
+    marginTop: 10,
   },
 });

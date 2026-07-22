@@ -4,8 +4,8 @@ import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import Dropdown from '../components/Dropdown';
 
-export default function PauseTimeScreen({ onNext, onBack, exerciseSeconds }) {
-    const [pauseSeconds, setPauseSeconds] = useState('15');
+export default function PauseTimeScreen({ onNext, onBack, exerciseSeconds, initialPauseSeconds = '15' }) {
+    const [pauseSeconds, setPauseSeconds] = useState(initialPauseSeconds);
 
     const pauseOptions = ['10', '15', '20', '30', '45', '60'];
 
@@ -32,7 +32,7 @@ export default function PauseTimeScreen({ onNext, onBack, exerciseSeconds }) {
             <View style={styles.header}>
                 <Text style={styles.title}>Set your pause time</Text>
                 <Text style={styles.subtitle}>
-                    Choose how much time you want to rest between exercises.
+                    Choose how long you want to rest between exercises.
                 </Text>
             </View>
 
@@ -56,27 +56,25 @@ export default function PauseTimeScreen({ onNext, onBack, exerciseSeconds }) {
                 </View>
             </View>
 
-            <View style={styles.actions}>
+            
                 <Button 
                     title="Start Workout"
                     onPress={handleStartWorkout}
-                    extraStyle={{ width: '100%' }}
                 />
-            </View>
+            
         </View>
     );
 } 
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', paddingTop: 60, paddingHorizontal: 16, justifyContent: 'space-between', paddingBottom: 24 },
+  container: { flex: 1, backgroundColor: '#fff', paddingTop: '30%', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 24 },
   header: { alignItems: 'center' },
   title: { fontSize: 27, fontWeight: '800', color: '#233126', textAlign: 'center' },
   subtitle: { fontSize: 15, lineHeight: 22, color: '#667066', textAlign: 'center', marginTop: 8, paddingHorizontal: 12 },
-  form: { flex: 1, justifyContent: 'center' },
+  form: { alignItems: 'center', marginTop: 40, width: '100%' },
   field: { gap: 7, alignItems: 'center' },
-  label: { fontSize: 15, fontWeight: '700', color: '#233126', alignSelf: 'flex-start', marginLeft: 20 },
-  summary: { alignItems: 'center', backgroundColor: '#eef6ea', borderRadius: 16, marginTop: 28, paddingVertical: 18, width: '100%' },
+  label: { fontSize: 15, fontWeight: '700', color: '#233126', alignSelf: 'center' },
+  summary: { alignItems: 'center', backgroundColor: '#eef6ea', borderRadius: 16, marginTop: 28, paddingVertical: 18, width: '70%' },
   summaryLabel: { fontSize: 11, fontWeight: '800', color: '#5e8a63', letterSpacing: 1 },
   summaryValue: { fontSize: 24, fontWeight: '800', color: '#355b3a', marginTop: 5, fontVariant: ['tabular-nums'] },
-  actions: { width: '100%' },
 });

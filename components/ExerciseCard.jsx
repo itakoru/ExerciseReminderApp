@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     card: {
         height: 240,
         position: 'relative',
+        marginTop: 40
     },
     largeCardOuter: {
         width: '100%',

@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Button, Animated, Image } from 'react-native';
+import { StyleSheet, Text, View, Animated, Image } from 'react-native';
 import { useTimerContext } from '../context/TimerContext';
+import Button from '../components/Button';
 
-export default function TimerActiveScreen({ onNavigate }) {
-  const { remainingSeconds, totalSeconds, isActive, stopTimer } = useTimerContext();
+export default function TimerActiveScreen({ autoStart = false, flowMinutes = 45, onBack, onNext }) {
+  const { remainingSeconds, totalSeconds, isActive, startTimer, stopTimer } = useTimerContext();
   
   const getFlowerImage = () => {
     // If we have no total seconds yet or the timer is done
@@ -34,6 +35,17 @@ export default function TimerActiveScreen({ onNavigate }) {
     }
   }, [isActive, remainingSeconds]);
 
+  // Start the timer automatically when the screen mounts (with a 300ms delay for smooth transition)
+  useEffect(() => {
+    // ONLY auto-start if we explicitly arrived from Window 4
+    if (autoStart && !isActive && remainingSeconds === 0) {
+      const timerId = setTimeout(() => {
+        startTimer(Number(flowMinutes) * 60);
+      }, 300);
+      return () => clearTimeout(timerId);
+    }
+  }, [autoStart]);
+
   const isTimerRunning = isActive || remainingSeconds > 0;
   
   const backgroundColor = pulseAnim.interpolate({
@@ -47,14 +59,17 @@ export default function TimerActiveScreen({ onNavigate }) {
         <>
           <Image source={getFlowerImage()} style={styles.flowerImage} />
           <Text style={styles.text}>Flow Timer Running...</Text>
-          <View style={{ marginTop: 40 }}>
+          <Text style={styles.timerText}>
+            {Math.floor(remainingSeconds / 60)}:{String(remainingSeconds % 60).padStart(2, '0')}
+          </Text>
+          <View style={{ marginTop: 40, width: '100%', alignItems: 'center' }}>
             <Button 
               title="Cancel Timer" 
               onPress={() => {
                 stopTimer();
-                if (onNavigate) onNavigate(1); // Go back to setup screen
+                if (onBack) onBack(); 
               }} 
-              color="#ff3b30" // Red color for cancel
+              extraStyle={{ position: 'relative', bottom: 0, backgroundColor: '#b84d4d' }}
             />
           </View>
         </>
@@ -62,13 +77,28 @@ export default function TimerActiveScreen({ onNavigate }) {
         <>
           <Image source={getFlowerImage()} style={styles.flowerImage} />
           <Text style={styles.text}>Time for a break!</Text>
-          <View style={{ marginTop: 40 }}>
+          <View style={{ marginTop: 40, width: '100%', alignItems: 'center' }}>
             <Button 
               title="Start Exercises" 
-              onPress={() => onNavigate && onNavigate(7)} 
-              color="#ff9500" 
+              onPress={() => onNext && onNext()} 
+              extraStyle={{ position: 'relative', bottom: 0 }}
             />
           </View>
+          
+          <Button 
+            title="Setup New Timer"
+            onPress={() => {
+              stopTimer(); // Reset context state
+              onBack && onBack(); // Punts to Window 3
+            }} 
+            extraStyle={{ 
+              position: 'absolute', 
+              bottom: 40, 
+              width: '45%', 
+              backgroundColor: '#e6cfa3',
+              paddingVertical: 10
+            }}
+          />
         </>
       )}
     </Animated.View>
@@ -91,5 +121,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
+  },
+  timerText: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    marginTop: 20,
+    color: '#5e8a63',
+    fontVariant: ['tabular-nums'],
   },
 });

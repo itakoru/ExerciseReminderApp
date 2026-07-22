@@ -4,6 +4,7 @@ import Svg, { Circle } from 'react-native-svg';
 import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import ExerciseCard from '../components/ExerciseCard';
+import { scheduleLocalTimerNotification } from '../services/NotificationService';
 import { exercises } from '../data/exercises';
 
 const typeOrder = { mobility: 0, strength: 1, stretch: 2 };
@@ -82,6 +83,9 @@ export default function ExerciseDetailScreen({ exerciseId, timerSettings, onBack
                 if (currentSeconds > 1) {
                     return currentSeconds - 1;
                 }
+
+                // Timer hit zero!
+
 
                 if (phase === 'exercise' && exerciseIndex < bodyPartExercises.length - 1) {
                     if (pauseSeconds > 0) {
@@ -176,14 +180,14 @@ export default function ExerciseDetailScreen({ exerciseId, timerSettings, onBack
                     </Pressable>
                 )}
             </ScrollView>
-            {isFinished && <Button title="Finish" onPress={onFinish} extraStyle={{ width: '100%' }} />}
+            {isFinished && <Button title="Finish" onPress={onFinish} extraStyle={{ alignSelf: 'center', width: '100%' }}/>}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#fff', paddingTop: 24, paddingHorizontal: 16, paddingBottom: 16 },
-    content: { alignItems: 'center', paddingTop: 20, paddingBottom: 24 },
+    content: { alignItems: 'center', paddingTop: 20 },
     flipHint: { marginTop: -10, marginBottom: 20, fontSize: 14, color: '#667066', textAlign: 'center' },
     phase: { fontSize: 14, fontWeight: '800', color: '#5e8a63', letterSpacing: 1, textTransform: 'uppercase' },
     timer: { width: timerSize, height: timerSize, borderRadius: timerSize / 2, alignItems: 'center', justifyContent: 'center', marginTop: 12, backgroundColor: '#eef6ea' },

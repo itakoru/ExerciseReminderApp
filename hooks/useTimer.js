@@ -8,8 +8,8 @@ export function useTimer() {
   const [isActive, setIsActive] = useState(false);
   
   // We keep track of the time the timer should end
-  const endTimeRef = useRef(null);
-  const intervalRef = useRef(null);
+  const endTimeRef = useRef(undefined);
+  const intervalRef = useRef(undefined);
   
   // AppState tracking to fix the UI when coming back from background
   const appState = useRef(AppState.currentState);
@@ -30,7 +30,7 @@ export function useTimer() {
             // Timer has passed while in background
             setRemainingSeconds(0);
             setIsActive(false);
-            endTimeRef.current = null;
+            endTimeRef.current = undefined;
           }
         }
       }
@@ -76,7 +76,8 @@ export function useTimer() {
     await cancelAllTimers();
     setIsActive(false);
     setRemainingSeconds(0);
-    endTimeRef.current = null;
+    setTotalSeconds(0);
+    endTimeRef.current = undefined;
   };
 
   return {

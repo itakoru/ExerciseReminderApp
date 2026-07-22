@@ -44,20 +44,16 @@ export async function registerForPushNotificationsAsync() {
   return true;
 }
 
-export async function scheduleLocalTimerNotification(seconds) {
+export async function scheduleLocalTimerNotification(seconds, customTitle, customBody, identifier = 'default-timer') {
   try {
-    await Notifications.cancelAllScheduledNotificationsAsync();
-
     const triggerSeconds = seconds > 0 ? seconds : 1;
     const triggerDate = new Date(Date.now() + triggerSeconds * 1000);
-    
-    // DEBUG: Alert before scheduling
-    // Alert.alert("Debug", `Scheduling notification for ${triggerSeconds} seconds`);
 
     const id = await Notifications.scheduleNotificationAsync({
+      identifier: identifier,
       content: {
-        title: "Time for a break! 🌸",
-        body: "Your flow state timer has ended. Time to do some exercises!",
+        title: customTitle || "Time for a break! 🌸",
+        body: customBody || "Your flow state timer has ended. Time to do some exercises!",
         sound: true,
         channelId: 'default', 
       },
@@ -76,4 +72,28 @@ export async function scheduleLocalTimerNotification(seconds) {
 
 export async function cancelAllTimers() {
   await Notifications.cancelAllScheduledNotificationsAsync();
+}
+
+export async function scheduleDailyReminder(hour, minute) {
+  try {
+    const id = await Notifications.scheduleNotificationAsync({
+      identifier: 'daily-reminder',
+      content: {
+        title: "Daily Reminder 🌸",
+        body: "It's time to get some work and exercises in!",
+        sound: true,
+        channelId: 'default',
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.DAILY,
+        hour: Number(hour),
+        minute: Number(minute),
+        channelId: 'default',
+      },
+    });
+    return id;
+  } catch (error) {
+    console.error("Failed to schedule daily reminder", error);
+    return null;
+  }
 }
