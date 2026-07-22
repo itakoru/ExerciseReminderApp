@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   textReg: {
     fontSize: 16,
     fontWeight: '400',
-    color: '#7B7163',
+    color: '#667066',
     textAlign: 'center',
   },
   image: {

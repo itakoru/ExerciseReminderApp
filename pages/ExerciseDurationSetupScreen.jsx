@@ -14,7 +14,7 @@ export default function ExerciseDurationSetupScreen({ onBack, onNext, initialExe
     <View style={styles.container}>
       <BackButton onPress={onBack} />
         <Text style={styles.title}>Set your timer</Text>
-        <Text style={styles.subtitle}>Choose how long you want each exercise to last.</Text>
+        <Text style={styles.subtitle}>Choose how long you want{"\n"}each exercise to last.</Text>
 
         <View style={styles.form}>
         <View style={styles.field}>
@@ -43,7 +43,7 @@ export default function ExerciseDurationSetupScreen({ onBack, onNext, initialExe
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', paddingTop: '30%', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 24 },
   content: { justifyContent: 'center', paddingBottom: 24 },
-  title: { fontSize: 27, fontWeight: '800', color: '#233126', textAlign: 'center' },
+  title: { fontSize: 20, fontWeight: 'bold', color: '#233126', textAlign: 'center' },
   subtitle: { fontSize: 15, lineHeight: 22, color: '#667066', textAlign: 'center', marginTop: 8, paddingHorizontal: 12 },
   form: { justifyContent: 'center', marginTop: 40 },
   field: { gap: 7, alignItems: 'center' },

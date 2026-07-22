@@ -80,8 +80,9 @@ export default function ExerciseListScreen({ onNext, onBack }) {
 
     return (
         <View style={styles.container}>
+            <BackButton onPress={onBack} />
             <View style={styles.header}>
-                <BackButton onPress={onBack} />
+        
                 <Text style={styles.title}>Exercise library</Text>
                 <Text style={styles.subtitle}>Choose a body part to see its exercises.</Text>
             </View>
@@ -126,12 +127,14 @@ export default function ExerciseListScreen({ onNext, onBack }) {
             />
 
             {/* führt zur nächsten Seite */}
-            <View style={styles.actions}>
+            <View>
                 <Button
                     title="Start"
                     onPress={() => firstExerciseOfSelectedBodyPart && onNext(firstExerciseOfSelectedBodyPart.id)}
-                    extraStyle={{ width: '100%' }}
+                    extraStyle={{ alignSelf: 'center' }}
+                    hasShadow={true} shadowColor="#759579"
                 />
+                
             </View>
         </View>
     );
@@ -139,8 +142,8 @@ export default function ExerciseListScreen({ onNext, onBack }) {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#fff', paddingTop: 24, paddingHorizontal: 16 },
-    header: { paddingTop: 32, paddingBottom: 16, alignItems: 'center' },
-    title: { fontSize: 24, fontWeight: '800', color: '#233126' },
+    header: { paddingTop: 20, marginTop: 40, paddingBottom: 16, alignItems: 'center' },
+    title: { fontSize: 24, fontWeight: 'bold', color: '#233126' },
     subtitle: { fontSize: 14, color: '#667066', textAlign: 'center', marginTop: 6 },
     grid: { paddingBottom: 20 },
     group: { marginBottom: 14 },
@@ -151,5 +154,4 @@ const styles = StyleSheet.create({
     expandIcon: { fontSize: 26, lineHeight: 26, fontWeight: '500', color: '#5e8a63' },
     exerciseGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', paddingTop: 14 },
     emptyText: { textAlign: 'center', color: '#666', marginTop: 24 },
-    actions: { paddingTop: 4, paddingBottom: 12, width: '100%' },
 });

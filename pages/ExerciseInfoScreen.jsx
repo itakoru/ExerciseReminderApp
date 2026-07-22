@@ -60,8 +60,8 @@ export default function ExerciseInfoScreen({ onNext, onBack }) {
       />
 
       {/* führt zur nächsten Seite */}
-      <View style={styles.actions}>
-        <Button title="Start" onPress={onNext} extraStyle={{ width: '100%' }} />
+      <View>
+        <Button title="Start" onPress={onNext} extraStyle={{ alignSelf: 'center' }} hasShadow={true} shadowColor="#759579" />
       </View>
     </View>
   );
@@ -69,10 +69,9 @@ export default function ExerciseInfoScreen({ onNext, onBack }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', paddingTop: 24, paddingHorizontal: 16 },
-  header: { paddingTop: 32, paddingBottom: 16, alignItems: 'center' },
-  title: { fontSize: 24, fontWeight: '800', color: '#233126' },
+  header: { paddingTop: 20, marginTop: 40, paddingBottom: 16, alignItems: 'center' },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#233126' },
   subtitle: { fontSize: 14, color: '#667066', textAlign: 'center', marginTop: 6 },
   grid: { paddingBottom: 20 },
   columnWrapper: { justifyContent: 'space-between', marginBottom: 14 },
-  actions: { paddingTop: 4, paddingBottom: 12, width: '100%' },
 });

@@ -12,7 +12,7 @@ export default function FlowSetupScreen({ initialFlowMinutes = '45', onNext, onB
     <View style={styles.container}>
       <Text style={[styles.text, { textAlign: 'center' }]}>When can I remind you{"\n"}in your flow state?</Text>
 
-      <Text style={{ fontSize: 16, color: '#7B7163', marginTop: 50 }}>Remind me</Text>
+      <Text style={{ fontSize: 16, color: '#667066', marginTop: 50 }}>Remind me</Text>
       <TimeInput initialValue={flowMinutes} onTimeChange={setFlowMinutes} />
 
       <Button 

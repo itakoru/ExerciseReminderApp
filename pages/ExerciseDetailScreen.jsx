@@ -180,7 +180,7 @@ export default function ExerciseDetailScreen({ exerciseId, timerSettings, onBack
                     </Pressable>
                 )}
             </ScrollView>
-            {isFinished && <Button title="Finish" onPress={onFinish} extraStyle={{ alignSelf: 'center', width: '100%' }}/>}
+            {isFinished && <Button title="Finish" onPress={onFinish} extraStyle={{ alignSelf: 'center' }}/>}
         </View>
     );
 }

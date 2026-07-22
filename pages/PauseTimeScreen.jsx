@@ -69,7 +69,7 @@ export default function PauseTimeScreen({ onNext, onBack, exerciseSeconds, initi
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', paddingTop: '30%', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 24 },
   header: { alignItems: 'center' },
-  title: { fontSize: 27, fontWeight: '800', color: '#233126', textAlign: 'center' },
+  title: { fontSize: 20, fontWeight: 'bold', color: '#233126', textAlign: 'center' },
   subtitle: { fontSize: 15, lineHeight: 22, color: '#667066', textAlign: 'center', marginTop: 8, paddingHorizontal: 12 },
   form: { alignItems: 'center', marginTop: 40, width: '100%' },
   field: { gap: 7, alignItems: 'center' },

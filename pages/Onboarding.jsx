@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
   textBold: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#736655',
+    color: '#233126',
     textAlign: 'center',
   },
   textReg: {
     fonsize: 20,
     fontWeight: '400',
-    color: '#7B7163',
+    color: '#667066',
     textAlign: 'center',
   },
   abstand: {

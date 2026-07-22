@@ -59,7 +59,7 @@ export default function App() {
       // Window 9 (Workout) -> Goes to 10 (Praise)
       case 9: return <ExerciseDetailScreen exerciseId={selectedExerciseId} timerSettings={timerSettings} onBack={() => navigateTo(6)} onFinish={() => navigateTo(10)} />;
       
-      case 10: return <PraiseScreen onNext={() => navigateTo(11)} again={() => navigateTo(9)}/>;
+      case 10: return <PraiseScreen onNext={() => navigateTo(11)} again={() => navigateTo(7)}/>;
       case 11: return <DailySuccessScreen onNext={() => navigateTo(1)} />;
       default: return <Onboarding />;
     }
