@@ -2,14 +2,22 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Button from '../components/Button';
 
-export default function DailySuccessScreen({ onNext, n }) {
+export default function DailySuccessScreen({ onNext, totalExercises = 0, totalWorkMinutes = 0 }) {
+  
+  const formatWorkTime = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours === 0) return `${mins} mins`;
+    return mins > 0 ? `${hours}h ${mins}m` : `${hours} hours`;
+  };
+  
   return (
     <View style={styles.container}>
-      <Text style={[styles.text, {fontSize: 40}]}>Excellent</Text>
-      <Text style={[styles.text, {marginTop: 15 }]}>Today you have worked</Text>
-      <Text style={[styles.text, {marginTop: 15 }]}>{n} hours</Text>
-      <Text style={[styles.text, {marginTop: 15 }]}>and done</Text>
-      <Text style={[styles.text, {marginTop: 15 }]}>{n} exercises</Text>
+      <Text style={[styles.textBold]}>Excellent</Text>
+      <Text style={[styles.textReg, {marginTop: 15 }]}>Today you have worked</Text>
+      <Text style={[styles.textReg, styles.textHigh, {marginTop: 15 }]}>{formatWorkTime(totalWorkMinutes)}</Text>
+      <Text style={[styles.textReg, {marginTop: 15 }]}>and done</Text>
+      <Text style={[styles.textReg, styles.textHigh, {marginTop: 15 }]}>{totalExercises} exercises</Text>
       <Button
       title="Back to the start screen"
       onPress={onNext}
@@ -21,12 +29,26 @@ export default function DailySuccessScreen({ onNext, n }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#fff',
+    paddingTop: 100
   },
-  text: {
+  textBold: {
     fontSize: 20,
-    fontWeight: 400,
+    fontWeight: 'bold',
+    color: '#233126',
+    textAlign: 'center',
   },
+  textReg: {
+    fontSize: 20,
+    fontWeight: '400',
+    color: '#667066',
+    textAlign: 'center',
+  },
+  textHigh: {
+    backgroundColor: '#BBF0C1',
+    paddingHorizintal: 1,
+    borderRadius: 4
+  }
 });

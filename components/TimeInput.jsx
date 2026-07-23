@@ -1,0 +1,70 @@
+import React, { useState } from 'react';
+import { StyleSheet, TextInput, Text, View } from 'react-native';
+
+export default function TimeInput({ onTimeChange, initialValue = '14:00' }) {
+  const [time, setTime] = useState(initialValue);
+
+  const handleChange = (text) => {
+    setTime(text)
+    if (onTimeChange) {
+      onTimeChange(text)
+    }
+  }
+
+  return (
+    <View style={styles.container}>
+        <View style={styles.rowContainer}>
+            <Text style={styles.leftUnitText}>in</Text>
+            <View>
+                <TextInput
+                style={styles.input}
+                keyboardType="numbers-and-punctuation"
+                value={time}
+                onChangeText={handleChange} 
+                />
+        </View>
+        <Text style={styles.rightUnitText}>min</Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 20,
+    marginBottom: 100,
+    justifyContent: 'center',
+  },
+  rowContainer: {
+    flexDirection: 'row',     
+    alignItems: 'center',   
+    justifyContent: 'center', 
+    width: '100%',
+    },
+  input: {
+    width: 150,
+    height: 50,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#759579',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    fontSize: 16,
+    color: '#333333',
+    textAlign: 'center',
+  },
+  leftUnitText: {
+    flex: 1,
+    fontSize: 16,
+    marginRight: 15,
+    color: '#7B7163',
+    textAlign: 'right',
+  },
+  rightUnitText: {
+    flex: 1,
+    fontSize: 16,
+    marginLeft: 15,
+    color: '#7B7163',
+    textAlign: 'left',
+  },
+});

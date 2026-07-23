@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-export default function Dropdown() {
+export default function Dropdown({selectedValue='5', onSelect, options=['1', '3', '5', '7', '15'], unit= 'min'}) {
     const [isOpen, setIsOpen] = useState(false)
-    const [selectedValue, setValue] = useState('Choose time')
 
-    const options=['1', '3', '5', '7', '15']
     let listContent = undefined
 
     if (isOpen) {
@@ -16,7 +14,7 @@ export default function Dropdown() {
                     key={index}
                     style={styles.option}
                     onPress={() => {
-                        setValue(value)
+                        if (onSelect) onSelect(value)
                         setIsOpen(false)
                     }}
                     >
@@ -30,6 +28,9 @@ export default function Dropdown() {
     return (
         <View style={styles.container}>
             <View style={styles.rowContainer}>
+                {/* Invisible counterweight to mathematically center the dropdown box */}
+                <Text style={[styles.leftUnitText, { opacity: 0 }]}>{unit}</Text>
+
                 <TouchableOpacity style={styles.button} onPress={() => setIsOpen(!isOpen)}>
                     <Text style={styles.buttonText}>{selectedValue}</Text>
                     <Text style={styles.arrow}>{isOpen ? '▲' : '▼'}</Text>
@@ -37,7 +38,7 @@ export default function Dropdown() {
                     {listContent}
                 </TouchableOpacity>
 
-                <Text style={styles.unitText}>min</Text>
+                <Text style={styles.rightUnitText}>{unit}</Text>
             </View>
         </View>
     )
@@ -75,11 +76,21 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#759579',
     },
-    unitText:{
+    leftUnitText:{
+        flex: 1,
         fontSize: 16,
-        marginLeft: 10,           
+        marginRight: 15,
         fontWeight: '600',
         color: '#333',
+        textAlign: 'right',
+    },
+    rightUnitText:{
+        flex: 1,
+        fontSize: 16,
+        marginLeft: 15,
+        fontWeight: '600',
+        color: '#333',
+        textAlign: 'left',
     },
     dropdownList:{
         width: 160,

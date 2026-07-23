@@ -1,10 +1,22 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-export default function Button({ title, onPress, extraStyle }){
+export default function Button({ title, onPress, extraStyle, shadowColor, hasShadow }){
+
+const shadowStyles = hasShadow ? {
+    // --- iOS Schatten ---
+    shadowColor: shadowColor || '#759579', 
+    shadowOffset: { width: 0, height: 6 }, 
+    shadowOpacity: 0.8,                    
+    shadowRadius: 15,                       
+    
+    // --- Android Schatten ---
+    elevation: 8,                          
+  } : {};
+
   return (
     <TouchableOpacity 
-      style={[styles.button, extraStyle]}
+      style={[styles.button, extraStyle, shadowStyles]}
       onPress={onPress}
       activeOpacity={0.7}
     >
@@ -14,23 +26,9 @@ export default function Button({ title, onPress, extraStyle }){
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 10,
-    paddingBottom: 20, 
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonContainer: {
-    width: '100%',
-    alignItems: 'center',     
-    marginBottom: 30,         
-  },
   button: {
+    position:'absolute',
+    bottom: 30,
     backgroundColor: '#759579',
     paddingVertical: 12,
     borderRadius: 5,
