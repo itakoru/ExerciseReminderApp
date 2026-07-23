@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, Animated, Image } from 'react-native';
 import { useTimerContext } from '../context/TimerContext';
 import Button from '../components/Button';
+import BackButton from '../components/BackButton';
 
-export default function TimerActiveScreen({ autoStart = false, flowMinutes = 45, onBack, onNext }) {
+export default function TimerActiveScreen({ autoStart = false, flowMinutes = 45, snoozeMinutes = 15, hasSnoozed = false, onBack, onCancel, onNext, onSnooze }) {
   const { remainingSeconds, totalSeconds, isActive, startTimer, stopTimer } = useTimerContext();
   
   const getFlowerImage = () => {
@@ -55,10 +56,12 @@ export default function TimerActiveScreen({ autoStart = false, flowMinutes = 45,
 
   return (
     <Animated.View style={[styles.container, { backgroundColor: isTimerRunning ? '#fff' : backgroundColor }]}>
+      <BackButton onPress={onBack} />
+      
       {isTimerRunning ? (
         <>
           <Image source={getFlowerImage()} style={styles.flowerImage} />
-          <Text style={styles.text}>Flow Timer Running...</Text>
+          <Text style={styles.text}>Timer is running...</Text>
           <Text style={styles.timerText}>
             {Math.floor(remainingSeconds / 60)}:{String(remainingSeconds % 60).padStart(2, '0')}
           </Text>
@@ -67,7 +70,7 @@ export default function TimerActiveScreen({ autoStart = false, flowMinutes = 45,
               title="Cancel Timer" 
               onPress={() => {
                 stopTimer();
-                if (onBack) onBack(); 
+                if (onCancel) onCancel(); 
               }} 
               extraStyle={{ position: 'relative', bottom: 0, backgroundColor: '#b84d4d' }}
             />
@@ -81,24 +84,19 @@ export default function TimerActiveScreen({ autoStart = false, flowMinutes = 45,
             <Button 
               title="Start Exercises" 
               onPress={() => onNext && onNext()} 
-              extraStyle={{ position: 'relative', bottom: 0 }}
+              extraStyle={{ position: 'relative', bottom: 0, width: '80%' }}
             />
+            {!hasSnoozed && (
+              <Button 
+                title="Enter Flow"
+                onPress={() => {
+                  if (onSnooze) onSnooze();
+                  startTimer(Number(snoozeMinutes) * 60);
+                }} 
+                extraStyle={{ position: 'relative', bottom: 0, marginTop: 15, width: '80%', backgroundColor: '#e6cfa3' }}
+              />
+            )}
           </View>
-          
-          <Button 
-            title="Setup New Timer"
-            onPress={() => {
-              stopTimer(); // Reset context state
-              onBack && onBack(); // Punts to Window 3
-            }} 
-            extraStyle={{ 
-              position: 'absolute', 
-              bottom: 40, 
-              width: '45%', 
-              backgroundColor: '#e6cfa3',
-              paddingVertical: 10
-            }}
-          />
         </>
       )}
     </Animated.View>

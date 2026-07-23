@@ -5,12 +5,12 @@ import Button from '../components/Button';
 import TimeInput from '../components/TimeInput';
 import { scheduleLocalTimerNotification } from '../services/NotificationService';
 
-export default function ReminderIntervalSetupScreen({ onBack, onNext }) {
-  const [reminderTime, setReminderTime] = useState('60')
+export default function ReminderIntervalSetupScreen({ initialFlowMinutes = '60', onBack, onNext }) {
+  const [flowMinutes, setFlowMinutes] = useState(initialFlowMinutes)
 
   const handleFinish = async () => {
     try {
-      const minutes = Number(reminderTime);
+      const minutes = Number(flowMinutes);
       if (minutes > 0) {
         await scheduleLocalTimerNotification(
           minutes * 60, 
@@ -24,7 +24,7 @@ export default function ReminderIntervalSetupScreen({ onBack, onNext }) {
     }
 
     if (onNext) {
-      onNext({ reminderTime: reminderTime })
+      onNext({ flowMinutes });
     }
   }
 
@@ -34,7 +34,7 @@ export default function ReminderIntervalSetupScreen({ onBack, onNext }) {
       
       <Text style={[styles.textReg, {marginTop: 50}]}>Remind me</Text>
 
-      <TimeInput initialValue={reminderTime} onTimeChange={setReminderTime} />
+      <TimeInput initialValue={flowMinutes} onTimeChange={setFlowMinutes} />
 
       <Text style={[styles.textReg, {marginBottom: 20}]}>Let the flower bloom!</Text>
       

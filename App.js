@@ -15,6 +15,9 @@ import DailySuccessScreen from './pages/DailySuccessScreen';
 import PauseTimeScreen from './pages/PauseTimeScreen';
 import { TimerProvider } from './context/TimerContext';
 import { registerForPushNotificationsAsync } from './services/NotificationService';
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
   // TIPP: Ändere die Zahl hier (1 bis 11), um das jeweilige Fenster live zu sehen!
@@ -27,6 +30,10 @@ export default function App() {
   const [hasSnoozed, setHasSnoozed] = useState(false);
   const [isBooting, setIsBooting] = useState(true);
   
+  const [completedExercisesCount, setCompletedExercisesCount] = useState(0);
+  const [totalWorkMinutes, setTotalWorkMinutes] = useState(0);
+  const [totalExercisesDone, setTotalExercisesDone] = useState(0);
+
   // Track if we just booted via a notification tap
   const [didColdStartFromNotification, setDidColdStartFromNotification] = useState(false);
 
@@ -123,9 +130,9 @@ export default function App() {
   const renderScreen = () => {
     switch (currentScreen) {
       case 1: return <Onboarding onNext={() => navigateTo(2)} />;
-      case 2: return <ReminderIntervalSetupScreen initialFlowMinutes={flowMinutes} onBack={() => navigateTo(1)} onNext={(data) => { if (data?.flowMinutes) setFlowMinutes(data.flowMinutes); navigateTo(3); }}/>;
-      case 3: return <FlowSetupScreen initialSnoozeMinutes={snoozeMinutes} onBack={() => navigateTo(2)} onNext={(data) => { 
-        if (data && data.snoozeMinutes) setSnoozeMinutes(data.snoozeMinutes); 
+      case 2: return <ReminderIntervalSetupScreen initialFlowMinutes={String(flowMinutes)} onBack={() => navigateTo(1)} onNext={(data) => { const minutes =data.flowMinutes || data; if (minutes) setFlowMinutes(String(minutes)); navigateTo(3); }}/>;
+      case 3: return <FlowSetupScreen initialSnoozeMinutes={String(snoozeMinutes)} onBack={() => navigateTo(2)} onNext={(data) => { const minutes =data.snoozeMinutes || data;
+        if (minutes) setSnoozeMinutes(String(minutes)); 
         navigateTo(4); 
       }}/>;
       
@@ -142,8 +149,17 @@ export default function App() {
         hasSnoozed={hasSnoozed}
         onBack={() => navigateTo(4)} 
         onCancel={() => { setHasSnoozed(false); navigateTo(1); }} 
-        onNext={() => { setHasSnoozed(false); navigateTo(8); }}
-        onSnooze={() => setHasSnoozed(true)} 
+        onNext={
+          () => { 
+            const flowMins =Number(flowMinutes) || 0;
+            setTotalWorkMinutes(prev => prev + flowMins)
+
+            setHasSnoozed(false); navigateTo(8); }}
+
+        onSnooze={() => {
+          const snoozeMins = Number(snoozeMinutes) || 0;
+          setTotalWorkMinutes(prev => prev + snoozeMins);
+          setHasSnoozed(true)}}
       />;
       
       // Window 8 (Library) -> Goes to 5 (Duration Setup)
@@ -158,7 +174,7 @@ export default function App() {
       // Window 9 (Workout) -> Goes to 10 (Praise)
       case 9: return <ExerciseDetailScreen exerciseId={selectedExerciseId} timerSettings={timerSettings} onBack={() => navigateTo(6)} onFinish={(count) => {setCompletedExercisesCount(count); setTotalExercisesDone(prev => prev + count); navigateTo(10)}} />;
       
-      case 10: return <PraiseScreen n={completedExercisesCount} onNext={() => navigateTo(11)} again={() => navigateTo(7)}/>;
+      case 10: return <PraiseScreen n={completedExercisesCount} onNext={() => navigateTo(11)} again={() => navigateTo(7)} />;
       case 11: return <DailySuccessScreen totalWorkMinutes={totalWorkMinutes} totalExercises={totalExercisesDone} onNext={() => navigateTo(1)} />;
       default: return <Onboarding />;
     }
