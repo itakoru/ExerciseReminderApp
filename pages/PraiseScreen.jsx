@@ -12,7 +12,7 @@ export default function PraiseScreen({ onNext, n, again }) {
       
 
         <Button 
-          title="Next" 
+          title="Start Next Flow" 
           onPress={again}
           extraStyle={styles.topBottom}
         />

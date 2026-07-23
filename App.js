@@ -143,7 +143,7 @@ export default function App() {
 
       // Window 7 (Flower Timer) -> Goes to 8 (Library). Back goes to 4.
       case 7: return <TimerActiveScreen 
-        autoStart={previousScreen === 4} 
+        autoStart={previousScreen === 4 || previousScreen === 10} 
         flowMinutes={flowMinutes} 
         snoozeMinutes={snoozeMinutes} 
         hasSnoozed={hasSnoozed}
