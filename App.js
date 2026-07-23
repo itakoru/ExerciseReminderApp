@@ -13,7 +13,6 @@ import ExerciseDetailScreen from './pages/ExerciseDetailScreen';
 import PraiseScreen from './pages/PraiseScreen';
 import DailySuccessScreen from './pages/DailySuccessScreen';
 import PauseTimeScreen from './pages/PauseTimeScreen';
-import PreFlowScreen from './pages/PreFlowScreen';
 import { TimerProvider } from './context/TimerContext';
 import { registerForPushNotificationsAsync } from './services/NotificationService';
 import * as Notifications from 'expo-notifications';
@@ -25,10 +24,9 @@ export default function App() {
   const [previousScreen, setPreviousScreen] = useState(null);
   const [selectedExerciseId, setSelectedExerciseId] = useState(undefined);
   const [timerSettings, setTimerSettings] = useState({ exerciseSeconds: 45, pauseSeconds: 15 });
-  const [flowMinutes, setFlowMinutes] = useState(45);
-  const [reminderTimestamp, setReminderTimestamp] = useState(null);
-  const [reminderTimeStr, setReminderTimeStr] = useState('60');
-  const [isManualRestart, setIsManualRestart] = useState(false);
+  const [flowMinutes, setFlowMinutes] = useState('60');
+  const [snoozeMinutes, setSnoozeMinutes] = useState('15');
+  const [hasSnoozed, setHasSnoozed] = useState(false);
   const [isBooting, setIsBooting] = useState(true);
   
   // Track if we just booted via a notification tap
@@ -47,36 +45,31 @@ export default function App() {
         if (savedSettings) setTimerSettings(JSON.parse(savedSettings));
 
         const savedFlow = await AsyncStorage.getItem('flowMinutes');
-        if (savedFlow) setFlowMinutes(Number(savedFlow));
+        if (savedFlow) setFlowMinutes(savedFlow);
 
-        const savedReminder = await AsyncStorage.getItem('reminderTimestamp');
-        let parsedReminder = savedReminder ? Number(savedReminder) : null;
+        const savedSnooze = await AsyncStorage.getItem('snoozeMinutes');
+        if (savedSnooze) setSnoozeMinutes(savedSnooze);
+
+        const savedHasSnoozed = await AsyncStorage.getItem('hasSnoozed');
+        if (savedHasSnoozed) setHasSnoozed(savedHasSnoozed === 'true');
 
         const savedTimerEnd = await AsyncStorage.getItem('activeFlowTimerEnd');
         const parsedTimerEnd = savedTimerEnd ? Number(savedTimerEnd) : null;
 
         const now = Date.now();
 
-        const savedReminderStr = await AsyncStorage.getItem('reminderTimeStr');
-        if (savedReminderStr) setReminderTimeStr(savedReminderStr);
-
-        // Check if we booted directly from a notification tap
-        const wasNotificationTapped = notificationResponse?.notification.request.identifier === 'exercise-reminder';
+        // Check if we booted directly from a notification tap (which means timer expired)
+        const wasNotificationTapped = notificationResponse?.notification.request.identifier === 'default-timer';
 
         if (wasNotificationTapped) {
           // Scenario 1: Teleported via Notification
           setDidColdStartFromNotification(true);
           setCurrentScreen(7);
-          setPreviousScreen(12); // Fakes coming from PreFlow so autoStart works
+          setPreviousScreen(4); // Fakes coming from setup so autoStart works if needed (though it's at 0)
         } else if (parsedTimerEnd && parsedTimerEnd > now) {
           // Scenario 2: A Flow Timer is actively running!
-          if (parsedReminder) setReminderTimestamp(parsedReminder);
           setCurrentScreen(7);
           setPreviousScreen(4); // simulate arriving via flow
-        } else if (parsedReminder && parsedReminder > now) {
-          // Scenario 3: A Pre-Flow countdown is actively running!
-          setReminderTimestamp(parsedReminder);
-          setCurrentScreen(12);
         }
 
       } catch (e) {
@@ -98,40 +91,32 @@ export default function App() {
 
   React.useEffect(() => {
     if (!isBooting) {
-      AsyncStorage.setItem('flowMinutes', String(flowMinutes));
+      AsyncStorage.setItem('flowMinutes', flowMinutes);
     }
   }, [flowMinutes, isBooting]);
 
   React.useEffect(() => {
     if (!isBooting) {
-      if (reminderTimestamp) {
-        AsyncStorage.setItem('reminderTimestamp', String(reminderTimestamp));
-      } else {
-        AsyncStorage.removeItem('reminderTimestamp');
-      }
+      AsyncStorage.setItem('snoozeMinutes', snoozeMinutes);
     }
-  }, [reminderTimestamp, isBooting]);
+  }, [snoozeMinutes, isBooting]);
 
   React.useEffect(() => {
     if (!isBooting) {
-      AsyncStorage.setItem('reminderTimeStr', reminderTimeStr);
+      AsyncStorage.setItem('hasSnoozed', String(hasSnoozed));
     }
-  }, [reminderTimeStr, isBooting]);
+  }, [hasSnoozed, isBooting]);
 
   // Listen for background notification taps AFTER boot
   React.useEffect(() => {
-    if (!isBooting && !didColdStartFromNotification && notificationResponse?.notification.request.identifier === 'exercise-reminder') {
-      // The user clicked the "Are you in your flow state now?" notification while app was in background
-      setPreviousScreen(12); // explicitly fake it so autoStart evaluates to true
+    if (!isBooting && !didColdStartFromNotification && notificationResponse?.notification.request.identifier === 'default-timer') {
+      // The user clicked the notification while app was in background
+      setPreviousScreen(4);
       setCurrentScreen(7);
     }
   }, [notificationResponse, isBooting, didColdStartFromNotification]);
 
   const navigateTo = (screen) => {
-    // Clear the daily reminder timestamp explicitly if they cancel from Window 12 or restart.
-    if (currentScreen === 12 && screen !== 7) {
-      setReminderTimestamp(null);
-    }
     setPreviousScreen(currentScreen);
     setCurrentScreen(screen);
   };
@@ -144,56 +129,28 @@ export default function App() {
   const renderScreen = () => {
     switch (currentScreen) {
       case 1: return <Onboarding onNext={() => navigateTo(2)} />;
-      case 2: return <ReminderIntervalSetupScreen initialReminderTime={reminderTimeStr} onBack={() => navigateTo(1)} onNext={(data) => { if (data?.reminderTime) setReminderTimeStr(data.reminderTime); navigateTo(3); }}/>;
-      case 3: return <FlowSetupScreen initialFlowMinutes={String(flowMinutes)} onBack={() => { 
-        setIsManualRestart(false); 
-        navigateTo(2); 
-      }} onNext={(data) => { 
-        if (data && data.flowMinutes) setFlowMinutes(data.flowMinutes); 
-        if (isManualRestart) {
-          setIsManualRestart(false);
-          navigateTo(7); // Bypass waiting screens for manual restarts!
-        } else {
-          navigateTo(4); 
-        }
+      case 2: return <ReminderIntervalSetupScreen initialFlowMinutes={flowMinutes} onBack={() => navigateTo(1)} onNext={(data) => { if (data?.flowMinutes) setFlowMinutes(data.flowMinutes); navigateTo(3); }}/>;
+      case 3: return <FlowSetupScreen initialSnoozeMinutes={snoozeMinutes} onBack={() => navigateTo(2)} onNext={(data) => { 
+        if (data && data.snoozeMinutes) setSnoozeMinutes(data.snoozeMinutes); 
+        navigateTo(4); 
       }}/>;
       
-      // Window 4 (What to expect) -> Goes to 12 (Pre-Flow)
-      case 4: return <ExerciseInfoScreen reminderTimeStr={reminderTimeStr} onBack={() => navigateTo(3)} onNext={(targetTimestamp) => {
-        if (targetTimestamp) {
-          setReminderTimestamp(targetTimestamp);
-        }
-        navigateTo(12);
+      // Window 4 (What to expect) -> Goes to 7 (Flow Timer)
+      case 4: return <ExerciseInfoScreen onBack={() => navigateTo(3)} onNext={() => {
+        navigateTo(7);
       }}/>;
-      
-      // Window 12 (Pre-Flow) -> Goes to 7 (Flower Timer)
-      case 12: return <PreFlowScreen 
-        reminderTimestamp={reminderTimestamp} 
-        onBack={() => navigateTo(4)} 
-        onStartFlow={async () => {
-          setReminderTimestamp(null);
-          try {
-            const { cancelTimer } = require('./services/NotificationService');
-            await cancelTimer('exercise-reminder');
-          } catch (e) {
-            console.log(e);
-          }
-          navigateTo(7);
-        }}
-        onCancel={async () => {
-          setReminderTimestamp(null);
-          try {
-            const { cancelTimer } = require('./services/NotificationService');
-            await cancelTimer('exercise-reminder');
-          } catch (e) {
-            console.log(e);
-          }
-          navigateTo(1);
-        }}
-      />;
 
-      // Window 7 (Flower Timer) -> Goes to 8 (Library). If manual restart, goes back to 3.
-      case 7: return <TimerActiveScreen autoStart={previousScreen === 12 || previousScreen === 3} flowMinutes={flowMinutes} onBack={() => { setIsManualRestart(true); navigateTo(3); }} onNext={() => navigateTo(8)} />;
+      // Window 7 (Flower Timer) -> Goes to 8 (Library). Back goes to 4.
+      case 7: return <TimerActiveScreen 
+        autoStart={previousScreen === 4} 
+        flowMinutes={flowMinutes} 
+        snoozeMinutes={snoozeMinutes} 
+        hasSnoozed={hasSnoozed}
+        onBack={() => navigateTo(4)} 
+        onCancel={() => { setHasSnoozed(false); navigateTo(1); }} 
+        onNext={() => { setHasSnoozed(false); navigateTo(8); }}
+        onSnooze={() => setHasSnoozed(true)} 
+      />;
       
       // Window 8 (Library) -> Goes to 5 (Duration Setup)
       case 8: return <ExerciseListScreen onBack={() => navigateTo(7)} onNext={(exerciseId) => { setSelectedExerciseId(exerciseId); navigateTo(5); }} />;
