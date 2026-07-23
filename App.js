@@ -23,6 +23,7 @@ export default function App() {
   const [selectedExerciseId, setSelectedExerciseId] = useState(undefined);
   const [timerSettings, setTimerSettings] = useState({ exerciseSeconds: 45, pauseSeconds: 15 });
   const [flowMinutes, setFlowMinutes] = useState(45);
+  const [completedExercisesCount, setCompletedExercisesCount] = useState(0);
 
   React.useEffect(() => {
     // Required for iOS! Will prompt the user to allow notifications.
@@ -45,7 +46,7 @@ export default function App() {
       case 4: return <ExerciseInfoScreen onBack={() => navigateTo(3)} onNext={() => navigateTo(7)}/>;
       
       // Window 7 (Flower Timer) -> Goes to 8 (Library)
-      case 7: return <TimerActiveScreen autoStart={previousScreen === 4} flowMinutes={flowMinutes} onBack={() => navigateTo(3)} onNext={() => navigateTo(8)} />;
+      case 7: return <TimerActiveScreen autoStart={previousScreen === 4} flowMinutes={flowMinutes} onBack={() => navigateTo(3)} onNext={() => {setTotalWorkMinutes(prev => prev + Number(flowMinutes)); navigateTo(8)}}  />;
       
       // Window 8 (Library) -> Goes to 5 (Duration Setup)
       case 8: return <ExerciseListScreen onBack={() => navigateTo(7)} onNext={(exerciseId) => { setSelectedExerciseId(exerciseId); navigateTo(5); }} />;
@@ -57,10 +58,10 @@ export default function App() {
       case 6: return <PauseTimeScreen initialPauseSeconds={String(timerSettings.pauseSeconds)} exerciseSeconds={timerSettings.exerciseSeconds} onBack={() => navigateTo(5)} onNext={(pauseData) => {setTimerSettings(prev => ({...prev, ...pauseData})); navigateTo(9)}} />;
       
       // Window 9 (Workout) -> Goes to 10 (Praise)
-      case 9: return <ExerciseDetailScreen exerciseId={selectedExerciseId} timerSettings={timerSettings} onBack={() => navigateTo(6)} onFinish={() => navigateTo(10)} />;
+      case 9: return <ExerciseDetailScreen exerciseId={selectedExerciseId} timerSettings={timerSettings} onBack={() => navigateTo(6)} onFinish={(count) => {setCompletedExercisesCount(count); setTotalExercisesDone(prev => prev + count); navigateTo(10)}} />;
       
-      case 10: return <PraiseScreen onNext={() => navigateTo(11)} again={() => navigateTo(7)}/>;
-      case 11: return <DailySuccessScreen onNext={() => navigateTo(1)} />;
+      case 10: return <PraiseScreen n={completedExercisesCount} onNext={() => navigateTo(11)} again={() => navigateTo(7)}/>;
+      case 11: return <DailySuccessScreen totalWorkMinutes={totalWorkMinutes} totalExercises={totalExercisesDone} onNext={() => navigateTo(1)} />;
       default: return <Onboarding />;
     }
   };
