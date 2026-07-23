@@ -4,12 +4,11 @@ import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import ExerciseCard from '../components/ExerciseCard';
 import { exercises } from '../data/exercises';
-import { scheduleLocalTimerNotification } from '../services/NotificationService';
 
 // auf dieser Seite werden nur die ersten sechs Übungen gezeigt
 const visibleExercises = exercises.slice(0, 6);
 
-export default function ExerciseInfoScreen({ reminderTimeStr, onNext, onBack }) {
+export default function ExerciseInfoScreen({ onNext, onBack }) {
   // speichert, welche Karte gerade umgedreht ist
   const [selectedExerciseId, setSelectedExerciseId] = useState(null);
   // merkt sich, dass die automatische Vorschau nur einmal läuft
@@ -65,26 +64,7 @@ export default function ExerciseInfoScreen({ reminderTimeStr, onNext, onBack }) 
         <Button 
           title="Start" 
           extraStyle={{ width: '100%' }} 
-          onPress={async () => {
-            const minutes = Number(reminderTimeStr) || 0;
-            let targetTimestamp = null;
-            
-            if (minutes > 0) {
-              targetTimestamp = Date.now() + (minutes * 60 * 1000);
-              try {
-                await scheduleLocalTimerNotification(
-                  minutes * 60, 
-                  "Daily Exercise Check-in", 
-                  "Hey! Don't forget to get some exercises in today!", 
-                  "exercise-reminder" 
-                );
-              } catch (e) {
-                console.log(e);
-              }
-            }
-            
-            if (onNext) onNext(targetTimestamp);
-          }} 
+          onPress={onNext} 
         />
       </View>
     </View>

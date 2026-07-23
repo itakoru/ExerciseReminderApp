@@ -4,12 +4,12 @@ import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import TimeInput from '../components/TimeInput';
 
-export default function ReminderIntervalSetupScreen({ initialReminderTime = '60', onBack, onNext }) {
-  const [reminderTime, setReminderTime] = useState(initialReminderTime)
+export default function ReminderIntervalSetupScreen({ initialFlowMinutes = '60', onBack, onNext }) {
+  const [flowMinutes, setFlowMinutes] = useState(initialFlowMinutes)
 
   const handleFinish = async () => {
     if (onNext) {
-      onNext({ reminderTime: reminderTime });
+      onNext({ flowMinutes });
     }
   }
 
@@ -19,7 +19,7 @@ export default function ReminderIntervalSetupScreen({ initialReminderTime = '60'
       
       <Text style={[styles.textReg, {marginTop: 50}]}>Remind me</Text>
 
-      <TimeInput initialValue={reminderTime} onTimeChange={setReminderTime} />
+      <TimeInput initialValue={flowMinutes} onTimeChange={setFlowMinutes} />
 
       <Text style={[styles.textReg, {marginBottom: 20}]}>Let the flower bloom!</Text>
       
