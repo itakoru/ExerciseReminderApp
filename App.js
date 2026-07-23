@@ -142,7 +142,7 @@ export default function App() {
 
       // Window 7 (Flower Timer) -> Goes to 8 (Library). Back goes to 4.
       case 7: return <TimerActiveScreen 
-        autoStart={previousScreen === 4} 
+        autoStart={previousScreen === 4 || previousScreen === 10} 
         flowMinutes={flowMinutes} 
         snoozeMinutes={snoozeMinutes} 
         hasSnoozed={hasSnoozed}
@@ -164,7 +164,7 @@ export default function App() {
       // Window 9 (Workout) -> Goes to 10 (Praise)
       case 9: return <ExerciseDetailScreen exerciseId={selectedExerciseId} timerSettings={timerSettings} onBack={() => navigateTo(6)} onFinish={() => navigateTo(10)} />;
       
-      case 10: return <PraiseScreen onNext={() => navigateTo(11)} again={() => navigateTo(9)}/>;
+      case 10: return <PraiseScreen onNext={() => navigateTo(11)} again={() => navigateTo(7)}/>;
       case 11: return <DailySuccessScreen onNext={() => navigateTo(1)} />;
       default: return <Onboarding />;
     }

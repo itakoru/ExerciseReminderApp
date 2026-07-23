@@ -10,7 +10,7 @@ export default function PraiseScreen({ onNext, n, again }) {
       <Text style={[styles.text, {marginTop: 15 }]}>{n} exercises</Text>
       
         <Button 
-          title="Next" 
+          title="Start Next Flow" 
           onPress={again}
           extraStyle={styles.topBottom}
         />
