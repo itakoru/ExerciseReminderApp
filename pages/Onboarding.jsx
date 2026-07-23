@@ -61,6 +61,7 @@ export default function Onboarding({ onNext }) {
       />
       <Text style={[styles.textBold, styles.abstand, { marginTop: 15 }]}>Your Flower is You</Text>
       <Text style={[styles.textReg, styles.abstand]}>The timer runs in the background {"\n"} and will ring when it is time. {"\n"} Do an exercise and {"\n"} see your flower bloom again!</Text>
+      <Text style={styles.disclaimer}>This app does not replace professional medical advice.</Text>
       <Button 
         title="Start" 
         onPress={handleStart}
@@ -97,5 +98,10 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     resizeMode: 'contain',
-  }
+  },
+  disclaimer: {
+  fontSize: 11,
+  color: '#667066',
+  marginTop: 230,
+}
 });
