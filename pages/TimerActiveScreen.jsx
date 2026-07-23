@@ -117,8 +117,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: '400',
+    color: '#667066',
   },
   timerText: {
     fontSize: 40,

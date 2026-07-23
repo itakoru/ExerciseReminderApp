@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   textReg: {
-    fonsize: 20,
+    fontSize: 20,
     fontWeight: '400',
     color: '#667066',
     textAlign: 'center',
