@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import Button from '../components/Button';
 
 export default function DailySuccessScreen({ onNext, totalExercises = 0, totalWorkMinutes = 0 }) {
@@ -18,6 +18,11 @@ export default function DailySuccessScreen({ onNext, totalExercises = 0, totalWo
       <Text style={[styles.textReg, styles.textHigh, {marginTop: 15 }]}>{formatWorkTime(totalWorkMinutes)}</Text>
       <Text style={[styles.textReg, {marginTop: 15 }]}>and done</Text>
       <Text style={[styles.textReg, styles.textHigh, {marginTop: 15 }]}>{totalExercises} exercises</Text>
+      
+      <Image
+        source={require('../assets/flower/Untitled-10.png')}
+        style={styles.image}
+      />
       <Button
       title="Back to the start screen"
       onPress={onNext}
@@ -33,6 +38,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     paddingTop: 100
+  },
+  image: {
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
+    marginTop: 160,
   },
   textBold: {
     fontSize: 20,
