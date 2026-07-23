@@ -22,13 +22,97 @@ export default function App() {
   const [previousScreen, setPreviousScreen] = useState(undefined);
   const [selectedExerciseId, setSelectedExerciseId] = useState(undefined);
   const [timerSettings, setTimerSettings] = useState({ exerciseSeconds: 45, pauseSeconds: 15 });
-  const [flowMinutes, setFlowMinutes] = useState(45);
-  const [completedExercisesCount, setCompletedExercisesCount] = useState(0);
+  const [flowMinutes, setFlowMinutes] = useState('60');
+  const [snoozeMinutes, setSnoozeMinutes] = useState('15');
+  const [hasSnoozed, setHasSnoozed] = useState(false);
+  const [isBooting, setIsBooting] = useState(true);
+  
+  // Track if we just booted via a notification tap
+  const [didColdStartFromNotification, setDidColdStartFromNotification] = useState(false);
+
+  const notificationResponse = Notifications.useLastNotificationResponse();
 
   React.useEffect(() => {
     // Required for iOS! Will prompt the user to allow notifications.
     registerForPushNotificationsAsync();
+    
+    // Boot Engine: Read from Hard Drive
+    const loadState = async () => {
+      try {
+        const savedSettings = await AsyncStorage.getItem('timerSettings');
+        if (savedSettings) setTimerSettings(JSON.parse(savedSettings));
+
+        const savedFlow = await AsyncStorage.getItem('flowMinutes');
+        if (savedFlow) setFlowMinutes(savedFlow);
+
+        const savedSnooze = await AsyncStorage.getItem('snoozeMinutes');
+        if (savedSnooze) setSnoozeMinutes(savedSnooze);
+
+        const savedHasSnoozed = await AsyncStorage.getItem('hasSnoozed');
+        if (savedHasSnoozed) setHasSnoozed(savedHasSnoozed === 'true');
+
+        const savedTimerEnd = await AsyncStorage.getItem('activeFlowTimerEnd');
+        const parsedTimerEnd = savedTimerEnd ? Number(savedTimerEnd) : null;
+
+        const now = Date.now();
+
+        // Check if we booted directly from a notification tap (which means timer expired)
+        const wasNotificationTapped = notificationResponse?.notification.request.identifier === 'default-timer';
+
+        if (wasNotificationTapped) {
+          // Scenario 1: Teleported via Notification
+          setDidColdStartFromNotification(true);
+          setCurrentScreen(7);
+          setPreviousScreen(4); // Fakes coming from setup so autoStart works if needed (though it's at 0)
+        } else if (parsedTimerEnd && parsedTimerEnd > now) {
+          // Scenario 2: A Flow Timer is actively running!
+          setCurrentScreen(7);
+          setPreviousScreen(4); // simulate arriving via flow
+        }
+
+      } catch (e) {
+        console.log("Failed to load state", e);
+      } finally {
+        setIsBooting(false);
+      }
+    };
+    
+    loadState();
   }, []);
+
+  // Persist State when it changes
+  React.useEffect(() => {
+    if (!isBooting) {
+      AsyncStorage.setItem('timerSettings', JSON.stringify(timerSettings));
+    }
+  }, [timerSettings, isBooting]);
+
+  React.useEffect(() => {
+    if (!isBooting) {
+      AsyncStorage.setItem('flowMinutes', flowMinutes);
+    }
+  }, [flowMinutes, isBooting]);
+
+  React.useEffect(() => {
+    if (!isBooting) {
+      AsyncStorage.setItem('snoozeMinutes', snoozeMinutes);
+    }
+  }, [snoozeMinutes, isBooting]);
+
+  React.useEffect(() => {
+    if (!isBooting) {
+      AsyncStorage.setItem('hasSnoozed', String(hasSnoozed));
+    }
+  }, [hasSnoozed, isBooting]);
+
+  // Listen for background notification taps AFTER boot
+  React.useEffect(() => {
+    if (!isBooting && !didColdStartFromNotification && notificationResponse?.notification.request.identifier === 'default-timer') {
+      // The user clicked the notification while app was in background
+      setPreviousScreen(4);
+      setCurrentScreen(7);
+    }
+  }, [notificationResponse, isBooting, didColdStartFromNotification]);
 
   const navigateTo = (screen) => {
     setPreviousScreen(currentScreen);
@@ -39,14 +123,28 @@ export default function App() {
   const renderScreen = () => {
     switch (currentScreen) {
       case 1: return <Onboarding onNext={() => navigateTo(2)} />;
-      case 2: return <ReminderIntervalSetupScreen onBack={() => navigateTo(1)} onNext={() => navigateTo(3)}/>;
-      case 3: return <FlowSetupScreen initialFlowMinutes={String(flowMinutes)} onBack={() => navigateTo(2)} onNext={(data) => { if (data && data.flowMinutes) setFlowMinutes(data.flowMinutes); navigateTo(4); }}/>;
+      case 2: return <ReminderIntervalSetupScreen initialFlowMinutes={flowMinutes} onBack={() => navigateTo(1)} onNext={(data) => { if (data?.flowMinutes) setFlowMinutes(data.flowMinutes); navigateTo(3); }}/>;
+      case 3: return <FlowSetupScreen initialSnoozeMinutes={snoozeMinutes} onBack={() => navigateTo(2)} onNext={(data) => { 
+        if (data && data.snoozeMinutes) setSnoozeMinutes(data.snoozeMinutes); 
+        navigateTo(4); 
+      }}/>;
       
-      // Window 4 (What to expect) -> Goes to 7 (Flower Timer)
-      case 4: return <ExerciseInfoScreen onBack={() => navigateTo(3)} onNext={() => navigateTo(7)}/>;
-      
-      // Window 7 (Flower Timer) -> Goes to 8 (Library)
-      case 7: return <TimerActiveScreen autoStart={previousScreen === 4} flowMinutes={flowMinutes} onBack={() => navigateTo(3)} onNext={() => {setTotalWorkMinutes(prev => prev + Number(flowMinutes)); navigateTo(8)}}  />;
+      // Window 4 (What to expect) -> Goes to 7 (Flow Timer)
+      case 4: return <ExerciseInfoScreen onBack={() => navigateTo(3)} onNext={() => {
+        navigateTo(7);
+      }}/>;
+
+      // Window 7 (Flower Timer) -> Goes to 8 (Library). Back goes to 4.
+      case 7: return <TimerActiveScreen 
+        autoStart={previousScreen === 4} 
+        flowMinutes={flowMinutes} 
+        snoozeMinutes={snoozeMinutes} 
+        hasSnoozed={hasSnoozed}
+        onBack={() => navigateTo(4)} 
+        onCancel={() => { setHasSnoozed(false); navigateTo(1); }} 
+        onNext={() => { setHasSnoozed(false); navigateTo(8); }}
+        onSnooze={() => setHasSnoozed(true)} 
+      />;
       
       // Window 8 (Library) -> Goes to 5 (Duration Setup)
       case 8: return <ExerciseListScreen onBack={() => navigateTo(7)} onNext={(exerciseId) => { setSelectedExerciseId(exerciseId); navigateTo(5); }} />;
