@@ -1,23 +1,23 @@
 # Exercise Reminder App
 
-## 🎯 Wertversprechen
+## Wertversprechen
 
 Wir helfen Menschen mit sitzenden Berufen (im Home-Office) und Rückenschmerzen dabei, ihre Rückengesundheit zu fördern, indem wir sie daran erinnern Pausen einzulegen und körperliche Übungen durchzuführen, ohne Flow-Zustand und mit dem lauten Ton zu stören.
 
-## ✨ Funktionen
+## Funktionen
 
 - Ein intelligenter Timer für regelmäßige Pausen
 - Integrierte, gezielte Rückenübungen
 - Benachrichtigungen für Übungszeiten (lautlose/sanfte Erinnerung)
 - Unterstützung des Flow-States
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - React Native / Expo
 - Javascript
 - VS Code
 
-## 🚀 Projekt starten
+## Projekt starten
 
 ### Voraussetzungen
 
@@ -37,12 +37,12 @@ npx expo start
 - **Android Emulator:** Press `a`
 - **Handy:** Expo Go App scannen QR-Code
 
-### ⚠️ Bekannte Einschränkungen
+### Bekannte Einschränkungen
 
 - Notifications funktionieren nur auf dem physischen Gerät (nicht im Simulator)
 - iOS Simulator benötigt Xcode
 
-## 📁 Projektstruktur
+## Projektstruktur
 
 - assets: Bilder
 - componentes: UI-Komponente
@@ -58,7 +58,7 @@ npx expo start
 - package-lock.json
 - package.json
 
-## 🤝 Quellen
+## Quellen
 
 Die Übungen wurden nach allgemeinen Prinzipien der Verletzungsprävention ausgewählt. Jede Übungseinheit beginnt mit Aufwärmübungen, gefolgt von Kräftigungsübungen und endet mit Dehnübungen. Diese Reihenfolge dient dazu, den Körper auf die Belastung vorzubereiten, die Muskulatur zu aktivieren und das Verletzungsrisiko zu reduzieren.
 Die Übungen basieren auf den folgenden Quellen:
@@ -79,7 +79,7 @@ Ingrid Koutcherova,
 Artur Meshalkin, 
 Sofiia Shabashova
 
-## 📝 Lizenz
+## Lizenz
 
 Diese Software wird „wie besehen“ bereitgestellt, ohne jegliche Garantie oder Gewährleistung. Die Nutzung erfolgt auf
 eigene Verantwortung. Der Ersteller übernimmt keine Haftung für Schäden oder Probleme, die durch die Verwendung dieser
