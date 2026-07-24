@@ -58,6 +58,12 @@ npx expo start
 - package-lock.json
 - package.json
 
+## User-Test
+
+Der User-Test erfolgte via Zoom-Call. Der Testierende hat die Tester beobachtet, während sie den Prototyp der App bedingt haben. Wärenddessen die Tester haben den Ablauf kommentiert und Verbesserungen vorgeschlagen. 
+
+Der Protokoll ist via Link verfügbar:
+
 [User-test.pdf](https://github.com/user-attachments/files/30340082/User-test.pdf)
 
 
