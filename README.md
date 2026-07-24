@@ -73,7 +73,17 @@ https://www.muscleandfitness.com/workouts/workout-tips/14-secrets-people-who-nev
 
 Die Illustrationen der Übungen wurden mit ChatGPT generiert.
 
+## Autoren
+Gabriel Gajda, 
+Ingrid Koutcherova, 
+Artur Meshalkin, 
+Sofiia Shabashova
 
 ## 📝 Lizenz
 
-[Ihre Lizenz...]
+Diese Software wird „wie besehen“ bereitgestellt, ohne jegliche Garantie oder Gewährleistung. Die Nutzung erfolgt auf
+eigene Verantwortung. Der Ersteller übernimmt keine Haftung für Schäden oder Probleme, die durch die Verwendung dieser
+Software entstehen.
+
+Dieses Projekt ist lizenziert unter der [CC BY 4.0 Lizenz]( https://creativecommons.org/licenses/by/4.0/)
+
