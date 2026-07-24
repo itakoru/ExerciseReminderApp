@@ -58,6 +58,9 @@ npx expo start
 - package-lock.json
 - package.json
 
+[User-test.pdf](https://github.com/user-attachments/files/30340082/User-test.pdf)
+
+
 ## Quellen
 
 Die Übungen wurden nach allgemeinen Prinzipien der Verletzungsprävention ausgewählt. Jede Übungseinheit beginnt mit Aufwärmübungen, gefolgt von Kräftigungsübungen und endet mit Dehnübungen. Diese Reihenfolge dient dazu, den Körper auf die Belastung vorzubereiten, die Muskulatur zu aktivieren und das Verletzungsrisiko zu reduzieren.
