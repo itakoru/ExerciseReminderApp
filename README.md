@@ -72,6 +72,7 @@ https://www.nasm.org/resource-center/exercise-library
 https://www.muscleandfitness.com/workouts/workout-tips/14-secrets-people-who-never-get-exercise-injuries/
 
 Die Illustrationen der Übungen wurden mit ChatGPT generiert.
+Die Illustrationen der Blume von Ingrid Koutcherova
 
 ## Autoren
 Gabriel Gajda, 
