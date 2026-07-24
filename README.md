@@ -6,4 +6,6 @@
   mit npx expo start
 
   die App läuft nur in einem Simulator (IPhone) oder direkt auf dem Handy
+
+  Notifications funktionieren nur auf dem Gerät
   
